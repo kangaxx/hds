@@ -18,7 +18,21 @@
 #include "QList"
 #include "commonfunction_c.h"
 using namespace commonfunction_c;
+#define CHARS_CONNECTIONS_ELEMENTNAME_DATABASE "database"
+#define CHARS_CONNECTIONS_ELEMENTNAME_SERVER "server"
+#define CHARS_CONNECTIONS_ELEMENTNAME_USERNAME "username"
+#define CHARS_CONNECTIONS_ELEMENTNAME_PASSWORD "password"
+#define CHARS_CONNECTIONS_ELEMENTNAME_CONNNAME "connname"
+#define CHARS_CONNECTIONS_STATIC_CONNATION_NAME "static_mysql_connection"
 #define INT_MAX_TABLECOUNT 10
+#define _QCONDITIONLIST_VALID(added,arg_01,arg_02) \
+    if (added >= arg_01-1 && added <= arg_01 \
+    && added >= arg_02 - 1 && added <= arg_02)  \
+    return true;  \
+    else  \
+    return false;
+
+
 enum eRegularTableStruct
 {
     MustRegular = false,
@@ -49,7 +63,10 @@ enum eLiSqlOperate
     liLesser,
     liEqlAndBig,
     liEqlAndLes,
-    liBigAndLes
+    liBigAndLes,
+    liNotNULL,
+    liIsNULL,
+    liLike
 };
 
 enum eRemoveMode
@@ -66,7 +83,8 @@ enum eFctType
     MYSQL = 12,
     SQLLITE = 13,
     ORACLE11 = 14,
-    XML = 99
+    XML = 99,
+    LOG_BIN = 98
 };
 
 
@@ -80,7 +98,7 @@ typedef struct Connections
     QString Server;
 }str_Connections;
 
-
+typedef QString LiTableName;
 
 /*******************************************************************************************************************************************/
 //                                                                                                                                         //
@@ -96,9 +114,9 @@ public:
     LiRecords();
     LiRecords(LiRecords &other);
     ~LiRecords();
-    QSqlRecord First();
-    QSqlRecord Last();
-    QSqlRecord Next();
+    QSqlRecord First(); //set flag to first
+    QSqlRecord Last();  //set flag to last;
+    QSqlRecord Next();  //go next;
     QStringList NextFields(QStringList FieldNames);//get all field in one time;
     void SetRecords(QList<QSqlRecord> * Records);
     QList<QSqlRecord> GetRecords() const;
@@ -236,7 +254,6 @@ private:
     //add a Table to lTableNames, and return the table name nums.
     void AddTable(QString TableName);
     LiField* MakeGroupCondsToCond(QList<LiField*> GroupCond, eAndOrNot GroupAON, LiField * result);
-
 };
 
 
@@ -256,6 +273,145 @@ private:
     QString m_Database;
     QFile * m_pFile;
 };
+
+/************************************************************************************************************/
+//QConditionList ,  new query type will make coding easliy!
+class LiConditionList
+{
+public:
+    LiConditionList(){ /*do nothing */ }
+    explicit LiConditionList(int i){
+        if (i != 0)
+            throw "ERROR : can not set LiCondition by int (except 0)!";
+    }
+
+    inline LiConditionList &operator=(LiConditionList &other){
+        if (&other == this) return *this;
+        this->m_AON=other.m_AON;
+        this->m_Operate=other.m_Operate;
+        this->m_values=other.m_values;
+    }
+
+    inline LiConditionList &operator=(int i){
+        if (i == 0)
+            return *this;
+        else
+            throw "ERROR : can not set LiCondition by int (except 0)!";
+    }
+
+    LiConditionList &operator <<(eLiSqlOperate value);
+    LiConditionList &operator <<(eAndOrNot value);
+    LiConditionList &operator <<(QString value);
+    LiConditionList &operator <<(int value);
+    LiConditionList &operator <<(long value);
+    LiConditionList &operator <<(float value);
+    LiConditionList &operator <<(const char* value);
+    friend class ISqlQuery;
+    //    friend class MysqlQuery;
+    //    friend class SqlliteQuery;
+    //    friend class XmlQuery;
+    friend class SqlFunctions;
+private:
+    QList<eLiSqlOperate> m_Operate;
+    QList<eAndOrNot> m_AON;
+    QStringList m_values;
+    inline bool isValid(eLiSqlOperate &){
+        _QCONDITIONLIST_VALID(m_Operate.size(),m_AON.size(),(m_values.size()/2));
+    }
+    inline bool isValid(eAndOrNot &){
+        _QCONDITIONLIST_VALID(m_AON.size(),m_Operate.size(),(m_values.size()/2));
+    }
+    inline bool isValid(QString &){
+        _QCONDITIONLIST_VALID((m_values.size()/2),m_AON.size(),m_Operate.size());
+    }
+    inline bool isComplete(){
+        if (m_Operate.size() == 0 && m_AON.size() == 0 && m_values.size() == 0)
+            return true;
+        else if (m_Operate.size() == m_AON.size() && m_Operate.size() == m_values.size()/2
+                && m_values.size() % 2 == 0 && m_Operate.size() > 0)
+            return true;
+        else
+            return false;
+    }
+
+    inline eLiSqlOperate getOperator(int i) {
+        if (!isComplete())
+            throw QString("Error, LiConditionList Operator-member append in-complete!");
+        if (i >= m_Operate.size() || i < 0)
+            throw QString("Error, LiConditionList getOperator index out of range!");
+        return m_Operate.at(i);
+    }
+
+    inline eLiSqlOperate getOperator(LiConditionList &list, int i){
+        return list.getOperator(i);
+    }
+
+    inline eAndOrNot getAON(int i){
+        if (!isComplete())
+            throw QString("Error, LiConditionList AON-member append in-complete!");
+        if (i >= m_AON.size() || i < 0)
+            throw QString("Error, LiConditionList getAON index out of range!");
+        return m_AON.at(i);
+    }
+
+    inline eAndOrNot getAON(LiConditionList &list, int i){
+        return list.getAON(i);
+    }
+
+    QString getFieldName(int i){
+        if (!isComplete())
+            throw QString("Error, LiConditionList string member append in-complete!");
+        if (i >= m_values.size()/2 || i < 0)
+            throw QString("Error, LiConditionList getFieldName index out of range!");
+        return m_values.at(i*2); //name is always forward to value , and index is from 0!
+    }
+
+
+    inline QString getFieldName(LiConditionList &list, int i){
+        return list.getFieldName(i);
+    }
+
+    QString getFieldValue(int i){
+        if (!isComplete())
+            throw QString("Error, LiConditionList string member append in-complete!");
+        if (i >= m_values.size()/2 || i < 0)
+            throw QString("Error, LiConditionList getFieldValue index out of range!");
+        return m_values.at(i*2 + 1); //value is always backward to name , and index is from 0!
+    }
+
+    inline QString getFieldValue(LiConditionList &list, int i){
+        return list.getFieldValue(i);
+    }
+};
+
+class LiResultList
+{
+public:
+    LiResultList(){;}
+    void insert(QStringList value){m_value.append(value);}
+    void setName(QStringList name){m_name = name;}
+    int size(){return getCount();}
+    inline int getCount(){return m_value.size();}
+    QStringList &at(int i){
+        if (i < m_value.size())
+            return m_value[i];
+        else
+            throw QString("Error linq result out of range!");
+    }
+
+    const QString &at(int i,QString name){
+        QStringList temp = this->at(i);
+        return temp.at(m_name.indexOf(name));
+    }
+
+    QStringList &operator[](int i){return at(i);}
+private:
+    QList<QStringList> m_value;
+    QStringList m_name;
+};
+
+/***************************************************************end *******************************************/
+
 
 /**********************************                           Linq  Function                       *****************************************/
 /************************************************                   End                    *************************************************/
@@ -348,20 +504,37 @@ public:
     //GetTable() : return Table's record from sql database , base on Fields and Conditions gxx 2013 11 27
     virtual LiTable& query(QSqlDatabase pDB, LiDataContext &dc, LiTable &table)=0;
     virtual LiTable& query(LiDataContext &dc, LiTable & table)=0;
+
     //DoInsert function:
     //Insert records to one or more tables , and return result :
     //    <0 means insert fail,
     //    >= 0 means insert success and insert records count(absolutely , insert 0 rows still a success result)
     //create by gxx 2013 11 27
     virtual int DoInsert(QSqlDatabase pDB, LiDataContext &dc)=0;
+
     //DoUpdate function , create by gxx 2013 11 27 , nearly DoInsert but this function will do data update
     virtual int DoUpdate(QSqlDatabase pDB,LiDataContext &dc) = 0;
+    //new Linq class type and code easily.because of TSQL language's rule ,
+    //values must set AON = "AND",Operator = "liEqual"
+
     //DoUpdate function , create by gxx 2013 11 27 , del data in Tables
     virtual int DoDel(QSqlDatabase pDB,LiDataContext &dc) = 0;
+
     //create by gxx 20140408 new Insert function ,no need QSqlDatabase
     virtual int DoInsert(LiDataContext &dc)=0;
     virtual int DoUpdate(LiDataContext &dc)=0;
     virtual int DoDel(LiDataContext &dc)=0;
+    /**********************************************************************************************/
+    //new Linq class type and code easily. Call deriverd functions finish work,oop
+    //add by gxx 2015 09 01
+    virtual LiResultList query(QStringList &fields, LiTableName tableName, LiConditionList *conditions=0);
+    virtual LiTable &query(QStringList &fields,LiTableName tableName,LiTable &table,LiConditionList *conditions=0);
+    virtual int DoInsert(LiConditionList &values, LiTableName tableName);
+    virtual int DoUpdate(LiConditionList &values,LiConditionList &conditions,LiTableName tableName);
+    virtual int DoUpdate(LiConditionList &values, LiTableName tableName, LiConditionList *conditions =0);
+    virtual int DoDel(LiConditionList &conditions,LiTableName tableName);
+    virtual int DoDel(LiTableName tableName, LiConditionList *conditions = 0);
+    /**********************************************************************************************/
     //Remove Data, create by gxx 2013 11 27, this function will del data and move it to a backup table
     //notice remove mode :
     //   RollbackWithAnyError mode,  it won't del or move any row cause any error then return a -1 as result.
@@ -464,6 +637,7 @@ public:
     virtual ISqlConnect * sqlConnectFct()=0;    //to get a sql connect , for some special function. Normally sqlQryFct will create one connect auto.
     virtual ISqlErrorMsg * sqlErrFct()=0;
     virtual ISqlQuery * sqlQryFct()=0;
+    virtual void setConn(Connections conn) = 0;
     //new function below for increase factory's design gxx 20140326
 };
 
@@ -476,6 +650,15 @@ public:
     virtual ISqlConnect * sqlConnectFct();
     virtual ISqlErrorMsg * sqlErrFct();
     virtual ISqlQuery * sqlQryFct();
+    void setConn(Connections conn){
+        m_Conn = conn;
+        m_db = new QSqlDatabase;
+        *m_db = QSqlDatabase::addDatabase("QMYSQL",m_Conn.ConnName);
+        m_db->setHostName(conn.Server);
+        m_db->setUserName(conn.User);
+        m_db->setPassword(conn.Passwd);
+        m_db->setDatabaseName(conn.Database);
+    }
     ISqlQuery *sqlQryFct(MysqlConnect Conn,MysqlErrorMsg ErrMsg);
 private :
     Connections m_Conn;
@@ -488,6 +671,7 @@ public:
     virtual ISqlConnect * sqlConnectFct();
     virtual ISqlErrorMsg * sqlErrFct();
     virtual ISqlQuery * sqlQryFct();
+    void setConn(Connections){throw "sql lite function not finished yet!";}
     ISqlQuery *sqlQryFct(SqlliteConnect Conn,SqlliteErrorMsg ErrMsg);
 };
 
@@ -499,6 +683,7 @@ public:
     virtual ISqlConnect * sqlConnectFct();
     virtual ISqlErrorMsg * sqlErrFct();
     virtual ISqlQuery * sqlQryFct();
+    void setConn(Connections conn){m_Conn=conn;}
 private:
     Connections m_Conn;
 };
@@ -509,8 +694,14 @@ class SqlFunctions
 public:
     explicit SqlFunctions();
     ~SqlFunctions();
-    virtual FSqlFactory& Create(eFctType type, Connections Conn, FSqlFactory **SqlDest ); // Create the factory 's type depand on param
+    static FSqlFactory &Create(eFctType type, QString iniFile, QString Path= QString("")); //create sql link by ini file
+    static FSqlFactory &Create(eFctType type, string filePath);
+    static FSqlFactory &Create(eFctType type, Connections conn);
+    virtual FSqlFactory &Create(eFctType type, Connections Conn, FSqlFactory **SqlDest ); // Create the factory 's type depand on param
     static void GetSqlLink(QString iniFilePath, QString iniFileName, QString database, QString connName, Connections &conn);
+    static LiResultList rcdToLiResult(LiTable &,const QStringList &); //transfer LiTable which include records into liresult;
+    static int listToFields(LiConditionList &values, LiField *fields);
+
 };
 
 

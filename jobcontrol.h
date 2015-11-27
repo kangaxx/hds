@@ -1,5 +1,13 @@
 #ifndef JOBCONTROL_H
 #define JOBCONTROL_H
+
+//#include <ace/ACE.h>
+//#include <ace/Log_Msg.h>
+//#include <ace/INET_Addr.h>
+//#include <ace/SOCK_Connector.h>
+//#include <ace/SOCK_Stream.h>
+//#include <ace/SOCK_Acceptor.h>
+
 #include "commonfunction_c.h"
 #include "clscli.h"
 #include "common.h"
@@ -256,6 +264,32 @@ private:
         return sizeMoved;
     }
 };
+
+
+////本类提供简单快捷的网络通讯功能
+//class SockFunction
+//{
+//public:
+//    //初始化类时的两个参数分别是ip地址（或计算机名），及端口号，相关参数请添加在service_js.ini文件内
+//    SockFunction(const char *sockAddr,int port);
+//    SockFunction(SockFunction &other){this->m_addr = other.m_addr;}
+//    ~SockFunction(){;}
+//    SockFunction &operator =(SockFunction &right){
+//        if (this == &right)
+//            return  *this;
+//        this->m_addr = right.m_addr;
+//        return *this;
+//    }
+
+
+//    //主要的功能函数，两个参数分别是需要通过网络信息内容及其长度，返回发送信息成功与否的信号，
+//    //本函数不负责判定接受函数超出网络层以上层面的错误。
+//    //另外信息长度不可以超出一定的限制，长度限制定义在common.h的宏INT_NETMSG_SIGNAL_LENGTH
+//    bool sendMsg(const char *msg, int length, int msg_type = INT_UI_TO_CONCURR_CMD_TYPE_JOB_START);
+//private:
+//    ACE_INET_Addr m_addr;
+
+//};
 
 }
 #endif // JOBCONTROL_H

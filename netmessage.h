@@ -11,13 +11,14 @@
 using namespace std;
 
 //////////////////////////////////////
-#define INT_NETMESSAGE_UNIT_NUM 4
+#define INT_NETMESSAGE_UNIT_NUM 5
 enum eNMQueue
 {
     MISSIONID = 1,
     CURRSHOTNUM = 2,
     MAXSHOTNUM = 3,
-    JOBTYPE = 4
+    JOBTYPE = 4,
+    MAXPROCNUM = 5
 };
 ///////////////////////////////////////
 
@@ -25,13 +26,13 @@ class NetMessage
 {
 public:
     NetMessage();
-    NetMessage(int MissionId, int CurrentShotNum, int MaxShotNum, int type, int MemberLength);
+    NetMessage(int MissionId, int CurrentShotNum, int MaxShotNum, int type, int maxProcNum, int MemberLength);
     NetMessage(string Infos, int MemberLength);
     NetMessage(char Infos[], int MemberLength);
     NetMessage(char Infos[], int MemberLength, int TotalLength);
-    void Set(int MissionId,int CurrentShotNum,int MaxShotNum,int type, int MemberLength);
+    void Set(int MissionId, int CurrentShotNum, int MaxShotNum, int type, int maxProcNum, int MemberLength);
 
-    void Get(int *MissionId,int *CurrentShotNum,int *MaxShotNum,int *type, int *MemberLength = 0);
+    void Get(int *MissionId,int *CurrentShotNum,int *MaxShotNum,int *type,int *maxProcNum, int *MemberLength = 0);
     string GetString();
     char *GetChars(int Length);
 
@@ -42,12 +43,15 @@ private:
     int m_CurrentShotNum;
     int m_MaxShotNum;
     int m_type; //job type , 1 = map or stack job , 2 = reduce job
+    int m_maxProcNum; //max proc num for one job , one node
     int m_MemberLength;
     string m_StrInfos;
-
+    /*************************************************************/
+    //if change element group , pls take care of these function
     void SetString();
 
     void SetMembers();
+    /*************************************************************/
     void SetMember(string StrInfos,eNMQueue Name, int& dest);
     string GetMemberFromString(string Infos,eNMQueue Name);
 

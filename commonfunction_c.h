@@ -13,6 +13,8 @@
 #include <time.h>
 #include <string>
 #include <regex.h>
+#include <assert.h>
+
 using namespace std;
 #define MAX_INIFILE_LINE_LENGTH 64
 #define CHAR_INIFILE_PARAMETER_SPLIT_FLAG '='
@@ -24,7 +26,8 @@ using namespace std;
 #define DEFAULT_DATETIME_FMT "%Y-%m-%d %I:%M:%S"
 #define DEFAULT_LINUX_PATH_LENGTH 1024
 #define CHARS_QMODEL_SYSENV_ROOT "QM_ROOT"
-#define CHARS_QMODEL_PATHSTR "../config"
+#define CHARS_QMODEL_LINUX_PATH_PARENT_FLAG "/.."
+#define CHARS_QMODEL_CONFIG_PATH_NAME "/config/"
 namespace commonfunction_c {
 
 class BaseFunctions
@@ -46,7 +49,8 @@ public:
     static string time2str(time_t time);//transfer time 2 string
     static time_t str2time(string str); //transfer string 2 time,from '1970-01-01 00:08:00'
     static string cutValue(string wholeStr,string regExp); //find regExp in wholeStr, in regExp, word "value" is the return,
-                                                           //exp: reduce_type|value|,will get "aaa" in whole string "reduce_type|aaa|"
+                                                               //exp: reduce_type|value|,will get "aaa" in whole string "reduce_type|aaa|"
+    static string combineFilePath(string path,string fileName); //combine file name and path name , will confirm if there is an '/' between path and file;
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //getProcArgv: to get process argument, set *title to argu name ,like "-l" ,
     //             it will try to match three mode successively, "-labc" , "-l=abc", "-l abc -other" ,
@@ -184,6 +188,60 @@ ShareMemImp_Linux<T>::~ShareMemImp_Linux()
 {
     //nothing yet
 }
+
+//环形双链表，存储数据高效，在无法确认数组长度时，链表无需反复申请释放大块内存的优势较明显。
+template<class T>
+class DuLink{
+private:
+    class Node{
+    public:
+        T data;
+        Node *prior;
+        Node *next;
+        Node(T &element,Node *prior, Node *next):data(element){this->next = next;this->prior = prior; prior->next=next->prior = this;}
+        Node():data(data){}
+    };
+    Node *head;
+public:
+    DuLink():head(new Node()){head->prior=head->next=head;}
+    int size();
+
+    T &operator [](int idx);
+    //判断是否为空链
+    bool isEmpty()const{return head==head->next?true:false;}
+    //将元素添加至最后，注意node的指针设置
+    void addToLast(const T& element){Node* ne=new Node(element,head->prior,head);head->prior=head->prior->next=ne;}
+    //获取最后一个元素
+    T getLastElement()const{assert(!isEmpty());return head->prior->data;}
+    //删除最后一个元素，注意node的指针设置
+    void delLastElement(){assert(!isEmpty());Node* p=head->prior->prior;delete head->prior;head->prior=p;p->next=head;}
+    //修改最后一个元素
+    void alterLastEmlent(const T& newElement){assert(!isEmpty());head->prior->data=newElement;}
+    //插入元素
+    void insert(T element, int pos){insertElement(element, pos);}
+    void insertElement(T element, int pos);
+    //获取元素
+    T &get(int idx){return getElement(idx);}
+    T &getElement(int idx);
+    //删除元素
+    T del(int idx){return delElement(idx);}
+    T delElement(int idx);
+    //修改元素
+    void alter(const T &newElement, int idx){alterElement(newElement,idx);}
+    void alterElement(const T &newElement,int idx);
+    //查找元素
+    int findElement(const T& element) const;
+    //正序遍历
+    void Traverse(void (*visit)(T&element));
+    //逆序遍历
+    void TraverseBack(void (*visit)(T&element));
+    //清空链表
+    void clear(){clearAllElement();}
+    void clearAllElement();
+    //销毁链表
+    ~DuLink();
+};
+
 
 }
 
