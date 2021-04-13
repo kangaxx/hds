@@ -157,7 +157,8 @@
 #define INT_DAYNUM_ONEYEAR 366
 #define INT_TYPE_LICENSE_NOLIMIT 0
 #define INT_TYPE_LICENSE_BYDATE 1
-
+#define DEFAULT_LONGCHAR_SIZE 64
+#define DEFAULT_INTCHAR_BASE 10
 //GeoImageSo
 #define LIMIT_SCALE_DATA_IN_MAP 1.0f //设定放大极限
 #define MIN_SCALE_GRID_DISTANCE 50 //标尺刻度最小间距，太密了根本看不清
@@ -229,3 +230,15 @@
 #define INT_GEO_MOUSE_RIGHT_CLICK 3
 #define INT_GEO_KEY_CTRL 4
 #define INT_GEO_KEY_SHIFT 5
+
+//HALCON edge_burrs
+#define INT_BURRS_DIRECTION_HORIZ 0
+#define INT_BURRS_DIRECTION_VERT 1
+
+
+#if defined(__linux__) || defined(__linux)
+#  define __IS_LINUX__
+#elif !defined(SAG_COM) && (defined(WIN64) || defined(_WIN64) || defined(__WIN64__))
+#  define __IS_WINDOW__
+#  define __IS_WIN__
+#endif

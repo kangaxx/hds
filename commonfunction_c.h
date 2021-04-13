@@ -1,20 +1,16 @@
 #ifndef COMMONFUNCTION_C_H
 #define COMMONFUNCTION_C_H
 #include <iostream>
-#include <unistd.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
 #include <time.h>
 #include <string>
-#include <regex.h>
 #include <assert.h>
-#include <common.h>
+#include "common.h"
 
 using namespace std;
 #ifndef INT_MAKE_PATCH_SERIALNO
@@ -26,20 +22,85 @@ namespace commonfunction_c {
 class BaseFunctions
 {
 public:
-    enum eFindPathMode{FPM_ALL=0007,FPM_SYSENV=0001,FPM_PATHWORK=0002,FPM_PATHSTR=0004};
-    BaseFunctions(){m_FileName = ""; m_FilePath = "";}
-    BaseFunctions(string fileName, string filePath=""):m_FileName(fileName),m_FilePath(filePath){}
-    ~BaseFunctions(){}
-    static int GetWorkPath(char *dest); //get program run time path info!
-    static const char* getConfigPath(int mode=FPM_ALL); //mode : FPM_ALL,exec in the following order: SYSENV,PATHSTR,PATHWORK
+    enum eFindPathMode { FPM_ALL = 0007, FPM_SYSENV = 0001, FPM_PATHWORK = 0002, FPM_PATHSTR = 0004 };
+    BaseFunctions() { m_FileName = ""; m_FilePath = ""; }
+    BaseFunctions(string fileName, string filePath = "") :m_FileName(fileName), m_FilePath(filePath) {}
+    ~BaseFunctions() {}
+    static int GetWorkPath(char* dest);//get program run time path info!
+    static const char* getConfigPath(int mode = FPM_ALL); //mode : FPM_ALL,exec in the following order: SYSENV,PATHSTR,PATHWORK
     static string GetParaByName(string fileName, string name);//work for new type ini,ex: "password=123456";
     static string GetParaByName_safe(string fileName, string name);
     static string GetParaByLine(string fileName, int lineNum);//work for old type,just have value ex : "123456"
 
-    static char *Int2Chars(int in, char *out, int size=DEFAULT_INTCHAR_SIZE);
-    static int Chars2Int(const char *in, int size=DEFAULT_INTCHAR_SIZE);
-    static int Str2Int(string s);
-    static int Str2Int(string s, int i);
+    static char* Int2Chars(int in, char* out, int size = DEFAULT_INTCHAR_SIZE, int radix = DEFAULT_INTCHAR_BASE) {
+        _itoa_s(in, out, size, radix);
+        return out;
+    }
+
+    static char* Long2Chars(long in, char* out, int size = DEFAULT_LONGCHAR_SIZE) {
+        sprintf_s(out, size, "%ld", in);
+        return out;
+    }
+
+    static long Chars2Long(char* in) {
+        long out;
+        int msg = sscanf_s(in, "%ld", &out);
+        return out;
+
+    }
+    static int Chars2Int(const char* in, int size = DEFAULT_INTCHAR_SIZE);
+    static int Str2Int(string s) {
+        Str2Int(s, 0);
+    }
+    static int Str2Int(string s, int i) {
+        int result = 0;
+        const char* c = &s[0];
+        while (*c != '\0') {
+            if (*c < 48 || *c > 57)
+                return i;
+            result *= 10;
+            result += *c - 48;
+            ++c;
+        }
+        return result;
+    }
+#ifdef  __IS_WIN__
+    static TCHAR* DWORD2WinLog(DWORD in, TCHAR* out) {
+        wsprintf(out, _T("%d"), in);//应用
+        return out;
+    }
+
+
+    static string ws2s(const wstring& ws) {
+
+        size_t convertedChars = 0;
+        //string curLocale = setlocale(LC_ALL, NULL); //curLocale="C"
+        //setlocale(LC_ALL, "chs"); //comment by gxx, 默认情况下编译器会自动设置本地化
+        const wchar_t* wcs = ws.c_str();
+        size_t dByteNum = sizeof(wchar_t) * ws.size() + 1;
+
+        char* dest = new char[dByteNum];
+        wcstombs_s(&convertedChars, dest, dByteNum, wcs, _TRUNCATE);
+        string result = dest;
+        delete[] dest;
+        //setlocale(LC_ALL, curLocale.c_str());
+        return result;
+    }
+
+    static wstring s2ws(const string& s) {
+        size_t convertedChars = 0;
+        //string curLocale = setlocale(LC_ALL, NULL);   //curLocale="C"
+        //setlocale(LC_ALL, "chs"); 
+        const char* source = s.c_str();
+        size_t charNum = sizeof(char) * s.size() + 1;
+        wchar_t* dest = new wchar_t[charNum];
+        mbstowcs_s(&convertedChars, dest, charNum, source, _TRUNCATE);
+        wstring result = dest;
+        delete[] dest;
+        //setlocale(LC_ALL, curLocale.c_str());
+        return result;
+    }
+#endif // __IS_WIN__
     static string time2str(time_t time);//transfer time 2 string
     static time_t str2time(string str); //transfer string 2 time,from '1970-01-01 00:08:00'
     //将日期转换位各种格式的int值，暂时只支持年加日（天数），后续增强各种功能。
@@ -76,6 +137,7 @@ private:
     static int strcmp_nonsafe(const char *c1, const char *c2); // result 0  : c1 == c2 , 1 : c2 include c1 , -1 : c2 not include c1
 };
 
+#ifdef __IS_LINUX__
 typedef struct ShmInitials
 {
     const char *path;// for linux sys/shm.h function now
@@ -196,6 +258,7 @@ ShareMemImp_Linux<T>::~ShareMemImp_Linux()
 {
     //nothing yet
 }
+#endif // __IS_LINUX__
 
 //环形双链表，存储数据高效，在无法确认数组长度时，链表无需反复申请释放大块内存的优势较明显。
 template<class T>
@@ -226,7 +289,7 @@ public:
     bool isEmpty()const{return head==head->next?true:false;}
     //将元素添加至最后，注意node的指针设置
     void addToLast(const T& element){Node* ne=new Node(element,head->prior,head);}
-    inline void insertToLast(const T& element) { return addToLast(element); }
+	inline void insertToLast(const T& element) { return addToLast(element); }
     //获取最后一个元素
     T getLastElement()const{assert(!isEmpty());return head->prior->data;}
     //删除最后一个元素，注意node的指针设置
@@ -410,7 +473,7 @@ public:
     bool isEmpty()const{return head==head->next?true:false;}
     //将元素添加至最后，注意node的指针设置
     void addToLast(const T* element){new Node(element,head->prior,head);}
-    inline void insertToLast(const T *element) { return addToLast(element); }
+	inline void insertToLast(const T *element) { return addToLast(element); }
     //获取最后一个元素
     const T *getLastElement()const{assert(!isEmpty());return head->prior->data;}
     //删除最后一个元素，注意node的指针设置
@@ -418,8 +481,8 @@ public:
     //修改最后一个元素
     void alterLastEmlent(const T* newElement){assert(!isEmpty());head->prior->data=newElement;}
     //插入元素
-    void insert(T element, int pos){insertElement(element, pos);}
-    void insertElement(T *element, int pos){
+    void insert(T element, int pos = 0){insertElement(element, pos);}
+    void insertElement(T *element, int pos = 0){
         assert(pos >= 0);
         assert(pos < size());
         Node *p = head;
