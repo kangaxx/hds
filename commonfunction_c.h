@@ -44,9 +44,8 @@ public:
 
     static long Chars2Long(char* in) {
         long out;
-        int msg = sscanf_s(in, "%ld", &out);
+        sscanf_s(in, "%ld", &out);
         return out;
-
     }
     static int Chars2Int(const char* in, int size = DEFAULT_INTCHAR_SIZE);
     static int Str2Int(string s) {
@@ -63,6 +62,20 @@ public:
             ++c;
         }
         return result;
+    }
+
+    static string f2str(float in, int precision = 10) {
+        ostringstream oss;
+        oss.precision(precision);
+        oss << in;
+        string result(oss.str());
+        return result;
+    }
+
+    static float str2f(string in) {
+        float out;
+        sscanf_s(in.c_str(), "%f", &out);
+        return out;
     }
 #ifdef  __IS_WIN__
     static TCHAR* DWORD2WinLog(DWORD in, TCHAR* out) {
