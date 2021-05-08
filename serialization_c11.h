@@ -22,7 +22,7 @@ namespace serialization_c11 {
 	class SerializationOjbect {
 	public:
 		string getVersion() { return string(version); }
-		void setVersion(char* v) { strcpy(version, v); }
+		void setVersion(char* v) { strcpy_s(version, v); }
 		int getMemberNum() { return memberNum; }
 		void setMemberNum(int num) { memberNum = num; }
 	private:
@@ -57,13 +57,49 @@ namespace serialization_c11 {
 		float getDistance(int index) { return distance[index]; }
 		void setDistance(int index, float value) { distance[index] = value; }
 
+		int getMaxBurrX() { return maxBurrX; }
+		void setMaxBurrX(int value) { maxBurrX = value; }
+
+		int getMaxBurrY() { return maxBurrY; }
+		void setMaxBurrY(int value) { maxBurrY = value; }
+
 		string getFileName() { return string(fileName); }
-		void setFileName(char* v) { strcpy(fileName, v); }
+		void setFileName(const char* v) { strcpy_s(fileName, v); }
+
+		string getFileTime() { return string(fileTime); }
+		void setFileTime(const char* v) { strcpy_s(fileTime, v); }
+
+		int getBurrsNum() { return burrsNum; }
+		void setBurrsNum(int num) { burrsNum = num; }
+
+		int getGrabImageWidth() { return grabImageWidth; }
+		void setGrabImageWidth(int w) { grabImageWidth = w; }
+
+		int getGrabImageHeight() { return grabImageHeight; }
+		void setGrabImageHeight(int w) { grabImageHeight = w; }
+
+		int getSaveImageWidth() { return saveImageWidth; }
+		void setSaveImageWidth(int w) { saveImageWidth = w; }
+
+		int getSaveImageHeight() { return saveImageHeight; }
+		void setSaveImageHeight(int w) { saveImageHeight = w; }
 	private:
 		float pointX[INT_PAINTTER_SERIAL_POINT_SIZE];
 		float pointY[INT_PAINTTER_SERIAL_POINT_SIZE];
 		float distance[INT_PAINTTER_SERIAL_POINT_SIZE];
+
+		int maxBurrX;
+		int maxBurrY;
 		char fileName[40];
+		char fileTime[16];
+		int burrsNum;
+		//Ô­Í¼³ß´ç
+		int grabImageWidth; 
+		int grabImageHeight;
+		//±£´æ³ß´ç
+		int saveImageWidth;
+		int saveImageHeight;
+
 	};
 }
 

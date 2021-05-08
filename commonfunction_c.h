@@ -11,7 +11,6 @@
 #include <string>
 #include <assert.h>
 #include "common.h"
-
 using namespace std;
 #ifndef INT_MAKE_PATCH_SERIALNO
 #define INT_MAKE_PATCH_SERIALNO "1.05.0000"
@@ -64,12 +63,10 @@ public:
         return result;
     }
 
-    static string f2str(float in, int precision = 10) {
-        ostringstream oss;
-        oss.precision(precision);
-        oss << in;
-        string result(oss.str());
-        return result;
+    static string f2str(float in, const char* precision = "%.8f") {
+        char out[64];
+        sprintf_s(out, 64, precision, in);
+        return string(out);
     }
 
     static float str2f(string in) {
@@ -114,7 +111,18 @@ public:
         return result;
     }
 #endif // __IS_WIN__
-    static string time2str(time_t time);//transfer time 2 string
+    static int time2str(const time_t& time, string& strDateStr) {
+        char chTmp[20] = { '\0' };
+        struct tm p;
+        localtime_s(&p, &time);
+        p.tm_year = p.tm_year + 1900;
+        p.tm_mon = p.tm_mon + 1;
+        snprintf(chTmp, sizeof(chTmp), "%04d-%02d-%02d-%04d",
+            p.tm_year, p.tm_mon, p.tm_mday, p.tm_sec);
+        strDateStr = chTmp;
+        return 0;
+    }
+
     static time_t str2time(string str); //transfer string 2 time,from '1970-01-01 00:08:00'
     //将日期转换位各种格式的int值，暂时只支持年加日（天数），后续增强各种功能。
     static int time2int(time_t time, string ="yyddd"); //transfer time 2 int

@@ -234,8 +234,16 @@
 //HALCON edge_burrs
 #define INT_BURRS_DIRECTION_HORIZ 0
 #define INT_BURRS_DIRECTION_VERT 1
+#define INT_WRITE_IMAGE_WIDTH 1296
+#define INT_WRITE_IMAGE_HEIGHT 972
+#define FLOAT_GRAB_IMAGE_WIDTH 2592.0
+#define FLOAT_GRAB_IMAGE_HEIGHT 1944.0
+#define FLOAT_FORM_IMAGE_WIDTH 400.0
+#define FLOAT_FORM_IMAGE_HEIGHT 480.0
 
 
+#define INT_FIXED2WAYLIST_DEFAULT_SIZE 1024
+#define INT_FIXED2WAYLIST_CURRENT_IDX_ERROR -1
 #if defined(__linux__) || defined(__linux)
 #  define __IS_LINUX__
 #elif !defined(SAG_COM) && (defined(WIN64) || defined(_WIN64) || defined(__WIN64__))
