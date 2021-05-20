@@ -3,6 +3,15 @@
 
 #ifndef INT_SERIALIZABLE_OBJECT_SIZE
 #define INT_SERIALIZABLE_OBJECT_SIZE 512
+#define INT_SERIALIZABLE_BURRINFO_OBJECT_SIZE INT_SERIALIZABLE_OBJECT_SIZE
+#define TYPE_BURRS_IMAGE_TAICHI_NORMAL 10
+#define TYPE_BURRS_IMAGE_TAICHI_BURR 11
+#define TYPE_BURRS_IMAGE_ERROR_NO_IMAGE 99
+#define TYPE_BURRS_IMAGE_EDGE_NORMAL 20
+#define TYPE_BURRS_IMAGE_EDGE_BURR 21
+
+#define INT_FILE_NAME_SIZE 40
+#define INT_FILE_TIME_SIZE 16
 #endif //INT_SERIALIZABLE_OBJECT_SIZE
 
 #define INT_PAINTTER_SERIAL_POINT_SIZE 10
@@ -64,10 +73,10 @@ namespace serialization_c11 {
 		void setMaxBurrY(int value) { maxBurrY = value; }
 
 		string getFileName() { return string(fileName); }
-		void setFileName(const char* v) { strcpy_s(fileName, v); }
+		void setFileName(const char* v) { strncpy_s(fileName, v, INT_FILE_NAME_SIZE); }
 
 		string getFileTime() { return string(fileTime); }
-		void setFileTime(const char* v) { strcpy_s(fileTime, v); }
+		void setFileTime(const char* v) { strncpy_s(fileTime, v, INT_FILE_TIME_SIZE); }
 
 		int getBurrsNum() { return burrsNum; }
 		void setBurrsNum(int num) { burrsNum = num; }
@@ -76,13 +85,36 @@ namespace serialization_c11 {
 		void setGrabImageWidth(int w) { grabImageWidth = w; }
 
 		int getGrabImageHeight() { return grabImageHeight; }
-		void setGrabImageHeight(int w) { grabImageHeight = w; }
+		void setGrabImageHeight(int h) { grabImageHeight = h; }
 
 		int getSaveImageWidth() { return saveImageWidth; }
 		void setSaveImageWidth(int w) { saveImageWidth = w; }
 
 		int getSaveImageHeight() { return saveImageHeight; }
-		void setSaveImageHeight(int w) { saveImageHeight = w; }
+		void setSaveImageHeight(int h) { saveImageHeight = h; }
+
+		int getType() { return type; }
+		void setType(int t) { type = t; }
+		
+		//添加毛刺并排序,如果队列以满，则只接受最大的若干各毛刺，新添加的毛刺可能无法正确添加进去（或者可能挤掉原先队列里最小的毛刺)
+		void insertBurrSorted(float x, float y, float value) {
+			//逐个比较列表内的毛刺，如果新增毛刺大于比较毛刺，则新增毛刺替代原有毛刺，原有毛刺替代其后续毛刺
+			for (int i = 0; i < INT_PAINTTER_SERIAL_POINT_SIZE; ++i) {
+				if (value > distance[i]) {
+					float tmp = value;
+					value = distance[i];
+					distance[i] = tmp;
+					tmp = x;
+					x = pointX[i];
+					pointX[i] = tmp;
+					tmp = y;
+					y = pointY[i];
+					pointY[i] = tmp;
+				}
+			}
+			if (getBurrsNum() < INT_PAINTTER_SERIAL_POINT_SIZE)
+				setBurrsNum(getBurrsNum() + 1);
+		}
 	private:
 		float pointX[INT_PAINTTER_SERIAL_POINT_SIZE];
 		float pointY[INT_PAINTTER_SERIAL_POINT_SIZE];
@@ -90,16 +122,16 @@ namespace serialization_c11 {
 
 		int maxBurrX;
 		int maxBurrY;
-		char fileName[40];
-		char fileTime[16];
-		int burrsNum;
+		char fileName[INT_FILE_NAME_SIZE];
+		char fileTime[INT_FILE_TIME_SIZE];
+		int burrsNum = 0;
 		//原图尺寸
 		int grabImageWidth; 
 		int grabImageHeight;
 		//保存尺寸
 		int saveImageWidth;
 		int saveImageHeight;
-
+		int type; //背光图：正常 10， 毛刺 11 ， 纵向图: 正常 20，毛刺 21
 	};
 }
 

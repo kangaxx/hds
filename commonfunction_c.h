@@ -31,6 +31,51 @@ public:
     static string GetParaByName_safe(string fileName, string name);
     static string GetParaByLine(string fileName, int lineNum);//work for old type,just have value ex : "123456"
 
+    //找到数组的极值点（数组两端的两个元素不参与计算，因为无法判断它的另外一侧是什么情况）
+    //参数含义，array 数组指针， size 数组总长度 ， index 待判断的位置, n 判断范围, type 判断类型（最大，最小或者全部）
+    static int findInflection(const int* array, int size, int start, int end, int type) {
+        assert(start >= 0);
+        assert(end > start);
+        if (end >= size)
+            end = size - 1;
+        int value = array[start];
+        int result = start;
+        for (int i = start + 1; i <= end; ++i) {
+            if (type == TYPE_INFLECTION_MAX && array[i] >= value) {
+                if ((i != end) || (array[i] > value)) {
+                    result = i;
+                    value = array[i];
+                } 
+            } else if (type == TYPE_INFLECTION_MIN && array[i] <= value) {
+                if ((i != end) || (array[i] < value)) {
+                    result = i;
+                    value = array[i];
+                }
+            }
+
+        }
+        //两个边缘点不能判断是否是拐点，如果极值点在边缘则返回 -1 表示没有找到极致
+        if (result == start || result == end)
+            return -1;
+        else
+            return result;
+    }
+
+    //求一段数组内整数的平均值
+    static int getArrayAverage(int* array, int size, int start, int end) {
+        assert(start >= 0);
+        assert(end > start);
+        if (end >= size)
+            end = size - 1;
+        int count = end - start + 1;
+        assert(count > 0);
+        int sum = 0;
+        for (int i = start; i <= end; ++i) {
+            sum += array[i];
+        }
+        return sum / count;
+    }
+
     static char* Int2Chars(int in, char* out, int size = DEFAULT_INTCHAR_SIZE, int radix = DEFAULT_INTCHAR_BASE) {
         _itoa_s(in, out, size, radix);
         return out;
