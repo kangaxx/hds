@@ -5,6 +5,8 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <io.h>
+#include <stdlib.h>
 #include <math.h>
 #include <sys/types.h>
 #include <time.h>
@@ -119,6 +121,51 @@ public:
         sscanf_s(in.c_str(), "%f", &out);
         return out;
     }
+
+    static bool isFolderExist(const char* folder)
+    {
+        if (_access(folder, 0) == 0)
+            return true;
+        else
+            return false;
+    }
+
+    //逐级创建路径
+    static int32_t createDirectory(char* directoryPath)
+    {
+        uint32_t dirPathLen = 0;
+        if (directoryPath != NULL) {
+            dirPathLen = strlen(directoryPath);
+        }
+        assert(dirPathLen <= FILENAME_MAX);
+        char tmpDirPath[FILENAME_MAX] = { 0 };
+        for (uint32_t i = 0; i < dirPathLen; ++i)
+        {
+            tmpDirPath[i] = directoryPath[i];
+            if (tmpDirPath[i] == '\\' || tmpDirPath[i] == '/')
+            {
+                if (!isFolderExist(tmpDirPath))
+                {
+                    int ret = 0;
+#ifdef __IS_LINUX__
+                    ret = _mkdir(tmpDirPath);
+#endif
+                    //BOOL ret = CreateDirectory(tmpDirPath, NULL);
+                    if (ret != 0)
+                        return -1;
+                }
+            }
+        }
+        return 0;
+    }
+    //combine file name and path name , will confirm if there is an '/' between path and file;
+    static string combineFilePath(string path, string fileName) {
+        if (path[path.size() - 1] == '\\' || path[path.size()] == '/')
+            return path + fileName;
+        else
+            return path + '\\' + fileName;
+
+    }
 #ifdef  __IS_WIN__
     static TCHAR* DWORD2WinLog(DWORD in, TCHAR* out) {
         wsprintf(out, _T("%d"), in);//应用
@@ -173,8 +220,7 @@ public:
     static int time2int(time_t time, string ="yyddd"); //transfer time 2 int
     static string cutValue(string wholeStr,string regExp); //find regExp in wholeStr, in regExp, word "value" is the return,
     //exp: reduce_type|value|,will get "aaa" in whole string "reduce_type|aaa|"
-    static string combineFilePath(string path,string fileName); //combine file name and path name , will confirm if there is an '/' between path and file;
-    static string combineFilePath_shout(string path,string fileName); //combine file , if file not access , will throw error
+    
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //getProcArgv: to get process argument, set *title to argu name ,like "-l" ,
     //             it will try to match three mode successively, "-labc" , "-l=abc", "-l abc -other" ,
