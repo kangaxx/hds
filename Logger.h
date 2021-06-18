@@ -1,3 +1,4 @@
+#pragma once
 //20210520 by gxx
 //日志功能系统，目前适合vc2019
 #include <iostream>

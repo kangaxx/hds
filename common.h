@@ -247,6 +247,9 @@
 
 #define INT_HALCON_IMAGE_SIZE 4000*2000 //800万像素
 #define INT_HALCON_BURR_RESULT_SIZE INT_HALCON_IMAGE_SIZE + 2048
+#define FLOAT_BURR_LEVEL_LOW 10.0 //小于10um是小毛刺
+#define FLOAT_BURR_LEVEL_MID 20.0 //10 ~ 20um 是中型毛刺,大于等于20um是大型毛刺
+
 
 #define TYPE_INFLECTION_MAX 1 //最大值波峰
 #define TYPE_INFLECTION_MIN 2 //最小值波峰

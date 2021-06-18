@@ -27,7 +27,18 @@ public:
     BaseFunctions() { m_FileName = ""; m_FilePath = ""; }
     BaseFunctions(string fileName, string filePath = "") :m_FileName(fileName), m_FilePath(filePath) {}
     ~BaseFunctions() {}
-    static int GetWorkPath(char* dest);//get program run time path info!
+    //get program run time path info!
+    static wstring GetWorkPath() {
+        wstring wstr;
+        unsigned long size = GetCurrentDirectory(0, NULL);
+        wchar_t* path = new wchar_t[size];
+        if (GetCurrentDirectory(size, path) != 0)
+        {
+            wstr = path;
+        }
+        delete[] path;
+        return wstr;
+    }
     static const char* getConfigPath(int mode = FPM_ALL); //mode : FPM_ALL,exec in the following order: SYSENV,PATHSTR,PATHWORK
     static string GetParaByName(string fileName, string name);//work for new type ini,ex: "password=123456";
     static string GetParaByName_safe(string fileName, string name);
@@ -94,6 +105,12 @@ public:
         return out;
     }
     static int Chars2Int(const char* in, int size = DEFAULT_INTCHAR_SIZE);
+    static string Int2Str(int i) {
+        char number[10] = { 0 };
+        sprintf_s(number, 10, "%d", i);
+        return string(number);
+    }
+
     static int Str2Int(string s) {
         Str2Int(s, 0);
     }
