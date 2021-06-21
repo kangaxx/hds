@@ -1,6 +1,6 @@
 #ifndef JSONHELPER_H
 #define JSONHELPER_H
-//20210616 gxx
+//20210616 gxx Taize corp.
 /*****************************************************************************************
 json string Serialize/Desserialize , json node find/append/remove
 base on <boost/property_tree/json_parser.hpp>
