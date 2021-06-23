@@ -247,10 +247,11 @@
 
 #define INT_HALCON_IMAGE_SIZE 4000*2000 //800万像素
 #define INT_HALCON_BURR_RESULT_SIZE INT_HALCON_IMAGE_SIZE + 2048
-#define FLOAT_BURR_LEVEL_LOW 10.0 //小于10um是小毛刺
-#define FLOAT_BURR_LEVEL_MID 20.0 //10 ~ 20um 是中型毛刺,大于等于20um是大型毛刺
-
-
+#define FLOAT_BURR_LEVEL_LOW 25.0 //小于25um是小毛刺
+#define FLOAT_BURR_LEVEL_MID 50.0 //25 ~ 50um 是中型毛刺
+#define FLOAT_BURR_LEVEL_HIGH 75.0 //50 ~ 75um 是大型毛刺
+#define FLOAT_BURR_LEVEL_UPH 100.0 //75 ~ 100um 是超大型毛刺，超过100um是巨型毛刺
+#define MAX_CAMERA_NUM 5 //数据统计，允许最多相机数量
 #define TYPE_INFLECTION_MAX 1 //最大值波峰
 #define TYPE_INFLECTION_MIN 2 //最小值波峰
 
