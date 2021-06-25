@@ -12,6 +12,7 @@
 #include <time.h>
 #include <string>
 #include <assert.h>
+#include <tchar.h>
 #include "common.h"
 using namespace std;
 #ifndef INT_MAKE_PATCH_SERIALNO

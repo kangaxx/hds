@@ -15,9 +15,17 @@ base on <boost/property_tree/json_parser.hpp>
 #include <boost/typeof/typeof.hpp>
 #include <vector>
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 using namespace boost::property_tree;
 
 namespace commonfunction_c {
+	enum TRAVERSE_TYPE {
+		TRAVERSE_TYPE_ALL = 1,
+		TRAVERSE_TYPE_FIRST = 2,
+		TRAVERSE_TYPE_LAST = 3
+	};
+
 	class JsonHelper {
 	public:
 		JsonHelper(string json) {
@@ -52,7 +60,21 @@ namespace commonfunction_c {
 				result = (*values)[0];
 			delete values;
 			return result;
+		}
 
+		string search(string tree, string key) {
+			string result;
+			if (!_isInitialed)
+				return "";
+			std::vector<std::string>* values = findAll(tree, key, _pt);
+			int size = values->size();
+
+			if (size <= 0)
+				result = "";
+			else
+				result = (*values)[0];
+			delete values;
+			return result;
 		}
 	private:
 		wstring _json_w_string;
@@ -88,7 +110,16 @@ namespace commonfunction_c {
 			return result;
 		}
 
-		std::vector<std::string>* findAll(std::string tree, std::string key, ptree const& pt, std::vector<std::string>* out = NULL, int type = 0) {
+		std::string findFirst(std::string key, ptree const& pt) {
+			std::vector<std::string> values;
+			findAll(key, pt, &values);
+			int size = values.size();
+			if (size < 1) return "";
+			else
+				return values[0];
+		}
+
+		std::vector<std::string>* findAll(std::string tree, std::string key, ptree const& pt, std::vector<std::string>* out = NULL, TRAVERSE_TYPE type = TRAVERSE_TYPE_ALL) {
 			std::vector<std::string>* result = NULL;
 			if (out != NULL)
 				result = out;
@@ -97,15 +128,28 @@ namespace commonfunction_c {
 			for (auto& child : pt) {
 				if (child.first._Equal(tree)) {
 					findAll(key, child.second, result);
-					if (type == 0)
-						continue;
-					else
+					if (type == TRAVERSE_TYPE_FIRST)
 						return result;
+					else
+						continue;
 				}
 				findAll(tree, key, child.second, result);
 			}
+			if (type == TRAVERSE_TYPE_ALL)
+				return result;
+			else if (type == TRAVERSE_TYPE_LAST) {
 
-			return result;
+			}
+
+		}
+
+		std::string findFirst(std::string tree, std::string key, ptree const& pt, std::vector<std::string>* out = NULL, TRAVERSE_TYPE type = TRAVERSE_TYPE_ALL) {
+			std::vector<std::string> values;
+			findAll(tree, key, pt, &values);
+			int size = values.size();
+			if (size < 1) return "";
+			else
+				return values[0];
 		}
 	};
 }

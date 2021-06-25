@@ -42,10 +42,6 @@ namespace commonfunction_c {
 			}
 		}
 	private:
-
-
-		
-
 		void getDateTime(string& strDate) {
 			char chTmp[20] = { '\0' };
 			time_t t;
