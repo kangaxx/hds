@@ -1,6 +1,6 @@
 #pragma once
 //20210520 by gxx
-//ÈÕÖ¾¹¦ÄÜÏµÍ³£¬Ä¿Ç°ÊÊºÏvc2019
+//æ—¥å¿—åŠŸèƒ½ç³»ç»Ÿï¼Œç›®å‰é€‚åˆvc2019
 #include <iostream>
 #include <time.h>
 #include <fstream>
@@ -14,28 +14,28 @@
 namespace commonfunction_c {
 	class Logger {
 	public:
-		//Â·¾¶ÉèÖÃm_out £¨ÎÄ¼şÏµÍ³Â·¾¶»òÕßÆäËûÊä³öÉè±¸Â·¾¶µÈ£©
+		//è·¯å¾„è®¾ç½®m_out ï¼ˆæ–‡ä»¶ç³»ç»Ÿè·¯å¾„æˆ–è€…å…¶ä»–è¾“å‡ºè®¾å¤‡è·¯å¾„ç­‰ï¼‰
 		Logger(std::string o) : m_out(o){
 		}
 
 		void Initial(std::string f) {
-			//ÉèÖÃ¸ñÊ½
+			//è®¾ç½®æ ¼å¼
 			m_format = f;
 		}
 		void Log(std::string l) {
 			try {
-				//ÕûÀíÈÕÖ¾ÄÚÈİ
+				//æ•´ç†æ—¥å¿—å†…å®¹
 				std::string log;
 				if (m_format.empty()) {
-					//Èç¹ûÃ»ÓĞÉèÖÃ¸ñÊ½£¬Ä¬ÈÏ¾ÍÊÇ [ÄêÔÂÈÕ Ê±·ÖÃë] : Æ´½Ó log 
+					//å¦‚æœæ²¡æœ‰è®¾ç½®æ ¼å¼ï¼Œé»˜è®¤å°±æ˜¯ [å¹´æœˆæ—¥ æ—¶åˆ†ç§’] : æ‹¼æ¥ log 
 					getDateTime(log);
 					log = "[" + log + " ] LEVEL [Log] : " + l + "\n";
 				}
-				//Êä³öµ½form
+				//è¾“å‡ºåˆ°form
 				// to do 
-				//Êä³öµ½console
+				//è¾“å‡ºåˆ°console
 				std::cout << log << std::endl;
-				//Êä³öµ½ÎÄ¼ş
+				//è¾“å‡ºåˆ°æ–‡ä»¶
 				write2File(log);
 			} catch (...) {
 				// do nothing
@@ -87,14 +87,14 @@ namespace commonfunction_c {
 			return;
 		}
 
-		//outÎÄ¼şÃû¸ñÊ½ÉèÖÃ£¬ Ìæ»»¹æÔò
-		//%date ÓÃµ±Ç°ÈÕÆÚÌæ´ú£¬ ¸ñÊ½ÊÇ2021-05-21ÕâÑù
-		//%time ÓÃµ±Ç°Ê±¼äÌæ´ú   ¸ñÊ½ÊÇ18:02:31ÕâÑù 
+		//outæ–‡ä»¶åæ ¼å¼è®¾ç½®ï¼Œ æ›¿æ¢è§„åˆ™
+		//%date ç”¨å½“å‰æ—¥æœŸæ›¿ä»£ï¼Œ æ ¼å¼æ˜¯2021-05-21è¿™æ ·
+		//%time ç”¨å½“å‰æ—¶é—´æ›¿ä»£   æ ¼å¼æ˜¯18:02:31è¿™æ · 
 		string getFileName() {
 			string result = "";
 			return result;
 		}
-		//Êä³öÁ÷
+		//è¾“å‡ºæµ
 		std::string m_out;
 		std::string m_format = "";
 	};

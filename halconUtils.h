@@ -2,8 +2,8 @@
 ///////////////////////////////////////////////////////////////////////////////////
 //    C++ serializable object and Serialize tool:                                //
 //      for send message by socket or zmq easy and quickly                       //
-//  20210508 halcon专用序列化类型     gxx                                        //
-//     数据类应该是SerializationOjbect的子类而不是直接使用serializationObject    //
+//  20210508 halcon    gxx                                        //
+//    serializationObject    //
 ///////////////////////////////////////////////////////////////////////////////////
 #include <HalconCpp.h>
 
@@ -21,7 +21,7 @@ namespace halconUtils {
             source.GetImageSize(&width, &height);
             HTuple channels = source.CountChannels();
             HTuple type = source.GetImageType();
-            if (strcmp(type[0].S(), "byte")) // 如果不是 byte 类型，则失败
+            if (strcmp(type[0].S(), "byte")) 
                 return NULL;
             HString Type;
             if (channels[0].I() == 1)
@@ -35,7 +35,7 @@ namespace halconUtils {
                 source.GetImagePointer3(reinterpret_cast<void**>(&R),
                     reinterpret_cast<void**>(&G),
                     reinterpret_cast<void**>(&B), &Type, &width, &height);
-                image = new unsigned char[width * height * 3]; //开辟vc byte图像内存
+                image = new unsigned char[width * height * 3]; 
                 for (int j = 0; j < height; j++)
                 {
                     for (int i = 0; i < width; i++)
@@ -108,7 +108,7 @@ namespace halconUtils {
         char fileName[INT_FILE_NAME_SIZE];
         char fileTime[INT_FILE_TIME_SIZE];
         int burrsNum;
-        int type; //背光图：正常 10， 毛刺 11 ， 纵向图: 正常 20，毛刺 21
+        int type;
     };
 
 }

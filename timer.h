@@ -14,7 +14,7 @@ namespace commonfunction_c {
 		}
 
 		void start() {
-			//后续添加一个自动执行计时并更新系统时间记录参数
+			//鍚庣画娣诲姞涓�涓嚜鍔ㄦ墽琛岃鏃跺苟鏇存柊绯荤粺鏃堕棿璁板綍鍙傛暟
 
 			if (_state != COMMON_TIMER_STATE::COMMON_TIME_STATE_RUNNING) {
 				_state = COMMON_TIMER_STATE::COMMON_TIME_STATE_RUNNING;

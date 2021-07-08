@@ -23,8 +23,8 @@ using namespace std;
 ///////////////////////////////////////////////////////////////////////////////////
 //    C++ serializable object and Serialize tool:                                //
 //      for send message by socket or zmq easy and quickly                       //
-//  20210414 ×î½üÊ±¼ä±È½Ï½ô£¬ÀàĞÍ¼ì²éµÈ¹¦ÄÜÏÈ·Å·Å gxx                            //
-//     Êı¾İÀàÓ¦¸ÃÊÇSerializationOjbectµÄ×ÓÀà¶ø²»ÊÇÖ±½ÓÊ¹ÓÃserializationObject    //
+//  20210414 æœ€è¿‘æ—¶é—´æ¯”è¾ƒç´§ï¼Œç±»å‹æ£€æŸ¥ç­‰åŠŸèƒ½å…ˆæ”¾æ”¾ gxx                            //
+//     æ•°æ®ç±»åº”è¯¥æ˜¯SerializationOjbectçš„å­ç±»è€Œä¸æ˜¯ç›´æ¥ä½¿ç”¨serializationObject    //
 ///////////////////////////////////////////////////////////////////////////////////
 namespace serialization_c11 {
 
@@ -96,9 +96,9 @@ namespace serialization_c11 {
 		int getType() { return type; }
 		void setType(int t) { type = t; }
 		
-		//Ìí¼ÓÃ«´Ì²¢ÅÅĞò,Èç¹û¶ÓÁĞÒÔÂú£¬ÔòÖ»½ÓÊÜ×î´óµÄÈô¸É¸÷Ã«´Ì£¬ĞÂÌí¼ÓµÄÃ«´Ì¿ÉÄÜÎŞ·¨ÕıÈ·Ìí¼Ó½øÈ¥£¨»òÕß¿ÉÄÜ¼·µôÔ­ÏÈ¶ÓÁĞÀï×îĞ¡µÄÃ«´Ì)
+		//æ·»åŠ æ¯›åˆºå¹¶æ’åº,å¦‚æœé˜Ÿåˆ—ä»¥æ»¡ï¼Œåˆ™åªæ¥å—æœ€å¤§çš„è‹¥å¹²å„æ¯›åˆºï¼Œæ–°æ·»åŠ çš„æ¯›åˆºå¯èƒ½æ— æ³•æ­£ç¡®æ·»åŠ è¿›å»ï¼ˆæˆ–è€…å¯èƒ½æŒ¤æ‰åŸå…ˆé˜Ÿåˆ—é‡Œæœ€å°çš„æ¯›åˆº)
 		void insertBurrSorted(float x, float y, float value) {
-			//Öğ¸ö±È½ÏÁĞ±íÄÚµÄÃ«´Ì£¬Èç¹ûĞÂÔöÃ«´Ì´óÓÚ±È½ÏÃ«´Ì£¬ÔòĞÂÔöÃ«´ÌÌæ´úÔ­ÓĞÃ«´Ì£¬Ô­ÓĞÃ«´ÌÌæ´úÆäºóĞøÃ«´Ì
+			//é€ä¸ªæ¯”è¾ƒåˆ—è¡¨å†…çš„æ¯›åˆºï¼Œå¦‚æœæ–°å¢æ¯›åˆºå¤§äºæ¯”è¾ƒæ¯›åˆºï¼Œåˆ™æ–°å¢æ¯›åˆºæ›¿ä»£åŸæœ‰æ¯›åˆºï¼ŒåŸæœ‰æ¯›åˆºæ›¿ä»£å…¶åç»­æ¯›åˆº
 			for (int i = 0; i < INT_PAINTTER_SERIAL_POINT_SIZE; ++i) {
 				if (value > distance[i]) {
 					float tmp = value;
@@ -125,13 +125,13 @@ namespace serialization_c11 {
 		char fileName[INT_FILE_NAME_SIZE];
 		char fileTime[INT_FILE_TIME_SIZE];
 		int burrsNum = 0;
-		//Ô­Í¼³ß´ç
+		//åŸå›¾å°ºå¯¸
 		int grabImageWidth; 
 		int grabImageHeight;
-		//±£´æ³ß´ç
+		//ä¿å­˜å°ºå¯¸
 		int saveImageWidth;
 		int saveImageHeight;
-		int type; //±³¹âÍ¼£ºÕı³£ 10£¬ Ã«´Ì 11 £¬ ×İÏòÍ¼: Õı³£ 20£¬Ã«´Ì 21
+		int type; //èƒŒå…‰å›¾ï¼šæ­£å¸¸ 10ï¼Œ æ¯›åˆº 11 ï¼Œ çºµå‘å›¾: æ­£å¸¸ 20ï¼Œæ¯›åˆº 21
 	};
 }
 

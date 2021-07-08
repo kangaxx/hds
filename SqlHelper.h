@@ -27,17 +27,17 @@ namespace extensionfunction_c {
 
 	class MysqlHelper : public SqlHelperBase {
 	private:
-		MYSQL mysql; //mysqlÁ¬½Ó
-		MYSQL_FIELD* fd = NULL;  //×Ö¶ÎÁĞÊı×é
-		char field[32][32] = { 0 };  //´æ×Ö¶ÎÃû¶şÎ¬Êı×é
-		MYSQL_RES* res; //Õâ¸ö½á¹¹´ú±í·µ»ØĞĞµÄÒ»¸ö²éÑ¯½á¹û¼¯
-		char queryStr[150]; //²éÑ¯Óï¾ä
+		MYSQL mysql; //mysqlè¿æ¥
+		MYSQL_FIELD* fd = NULL;  //å­—æ®µåˆ—æ•°ç»„
+		char field[32][32] = { 0 };  //å­˜å­—æ®µåäºŒç»´æ•°ç»„
+		MYSQL_RES* res; //è¿™ä¸ªç»“æ„ä»£è¡¨è¿”å›è¡Œçš„ä¸€ä¸ªæŸ¥è¯¢ç»“æœé›†
+		char queryStr[150]; //æŸ¥è¯¢è¯­å¥
 	public:
 		MysqlHelper() {
 
 		}
 		bool connect(string config) {
-			//½âÎöconfigÎÄ¼şÄÚµÄjsonÊı¾İ£¬»ñÈ¡Êı¾İ¿âÅäÖÃ
+			//è§£æconfigæ–‡ä»¶å†…çš„jsonæ•°æ®ï¼Œè·å–æ•°æ®åº“é…ç½®
 			boost::property_tree::ptree root;
 			boost::property_tree::read_json(config, root);
 			string host = root.get<string>("host");
@@ -45,11 +45,11 @@ namespace extensionfunction_c {
 			string passwd = root.get<string>("passwd");
 			string database = root.get<string>("database");
 			const int port = root.get<int>("port");
-			//³õÊ¼»¯mysql  
-			mysql_init(&mysql);  //Á¬½Ómysql£¬Êı¾İ¿â  
-			//·µ»ØfalseÔòÁ¬½ÓÊ§°Ü£¬·µ»ØtrueÔòÁ¬½Ó³É¹¦  
+			//åˆå§‹åŒ–mysql  
+			mysql_init(&mysql);  //è¿æ¥mysqlï¼Œæ•°æ®åº“  
+			//è¿”å›falseåˆ™è¿æ¥å¤±è´¥ï¼Œè¿”å›trueåˆ™è¿æ¥æˆåŠŸ  
 			if (!(mysql_real_connect(&mysql, host.c_str(), user.c_str(), passwd.c_str(), database.c_str(), port, NULL, 0)))
-				//ÖĞ¼ä·Ö±ğÊÇÖ÷»ú£¬ÓÃ»§Ãû£¬ÃÜÂë£¬Êı¾İ¿âÃû£¬¶Ë¿ÚºÅ£¨¿ÉÒÔĞ´Ä¬ÈÏ0»òÕß3306µÈ£©£¬¿ÉÒÔÏÈĞ´³É²ÎÊıÔÙ´«½øÈ¥  
+				//ä¸­é—´åˆ†åˆ«æ˜¯ä¸»æœºï¼Œç”¨æˆ·åï¼Œå¯†ç ï¼Œæ•°æ®åº“åï¼Œç«¯å£å·ï¼ˆå¯ä»¥å†™é»˜è®¤0æˆ–è€…3306ç­‰ï¼‰ï¼Œå¯ä»¥å…ˆå†™æˆå‚æ•°å†ä¼ è¿›å»  
 			{
 				printf("Error connecting to database:%s\n", mysql_error(&mysql));
 				return false;
@@ -63,22 +63,22 @@ namespace extensionfunction_c {
 		}
 
 		void free() {
-			mysql_free_result(res);  //ÊÍ·ÅÒ»¸ö½á¹û¼¯ºÏÊ¹ÓÃµÄÄÚ´æ¡£
-			mysql_close(&mysql);	 //¹Ø±ÕÒ»¸ö·şÎñÆ÷Á¬½Ó¡£
+			mysql_free_result(res);  //é‡Šæ”¾ä¸€ä¸ªç»“æœé›†åˆä½¿ç”¨çš„å†…å­˜ã€‚
+			mysql_close(&mysql);	 //å…³é—­ä¸€ä¸ªæœåŠ¡å™¨è¿æ¥ã€‚
 		}
 
 		int* query(string queryString) {
-			mysql_query(&mysql, "set names gbk"); //ÉèÖÃ±àÂë¸ñÊ½£¨SET NAMES GBKÒ²ĞĞ£©£¬·ñÔòcmdÏÂÖĞÎÄÂÒÂë  
-				//·µ»Ø0 ²éÑ¯³É¹¦£¬·µ»Ø1²éÑ¯Ê§°Ü  
-			if (mysql_query(&mysql, queryString.c_str())) {        // Ö´ĞĞÖ¸¶¨ÎªÒ»¸ö¿Õ½áÎ²µÄ×Ö·û´®µÄSQL²éÑ¯¡£	
+			mysql_query(&mysql, "set names gbk"); //è®¾ç½®ç¼–ç æ ¼å¼ï¼ˆSET NAMES GBKä¹Ÿè¡Œï¼‰ï¼Œå¦åˆ™cmdä¸‹ä¸­æ–‡ä¹±ç   
+				//è¿”å›0 æŸ¥è¯¢æˆåŠŸï¼Œè¿”å›1æŸ¥è¯¢å¤±è´¥  
+			if (mysql_query(&mysql, queryString.c_str())) {        // æ‰§è¡ŒæŒ‡å®šä¸ºä¸€ä¸ªç©ºç»“å°¾çš„å­—ç¬¦ä¸²çš„SQLæŸ¥è¯¢ã€‚	
 				printf("Query failed (%s)\n", mysql_error(&mysql));
 				return NULL;
 			}
 			else {
 				printf("query success\n");
 			}
-			//»ñÈ¡½á¹û¼¯  
-			if (!(res = mysql_store_result(&mysql)))    //»ñµÃsqlÓï¾ä½áÊøºó·µ»ØµÄ½á¹û¼¯  
+			//è·å–ç»“æœé›†  
+			if (!(res = mysql_store_result(&mysql)))    //è·å¾—sqlè¯­å¥ç»“æŸåè¿”å›çš„ç»“æœé›†  
 			{
 				printf("Couldn't get result from %s\n", mysql_error(&mysql));
 				return NULL;
@@ -89,14 +89,14 @@ namespace extensionfunction_c {
 		}
 
 		bool insert(string insertString) {
-			mysql_query(&mysql, "set names gbk"); //ÉèÖÃ±àÂë¸ñÊ½£¨SET NAMES GBKÒ²ĞĞ£©£¬·ñÔòcmdÏÂÖĞÎÄÂÒÂë  
-			// ·µ»ØÖ´ĞĞ½á¹û£¬0±íÊ¾²åÈë³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse¡£
+			mysql_query(&mysql, "set names gbk"); //è®¾ç½®ç¼–ç æ ¼å¼ï¼ˆSET NAMES GBKä¹Ÿè¡Œï¼‰ï¼Œå¦åˆ™cmdä¸‹ä¸­æ–‡ä¹±ç   
+			// è¿”å›æ‰§è¡Œç»“æœï¼Œ0è¡¨ç¤ºæ’å…¥æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›falseã€‚
 			return (mysql_query(&mysql, insertString.c_str()) == 0);   	
 		}
 
 		bool del(string deleteString) {
-			mysql_query(&mysql, "set names gbk"); //ÉèÖÃ±àÂë¸ñÊ½£¨SET NAMES GBKÒ²ĞĞ£©£¬·ñÔòcmdÏÂÖĞÎÄÂÒÂë  
-			// ·µ»ØÖ´ĞĞ½á¹û£¬0±íÊ¾²åÈë³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse¡£ 
+			mysql_query(&mysql, "set names gbk"); //è®¾ç½®ç¼–ç æ ¼å¼ï¼ˆSET NAMES GBKä¹Ÿè¡Œï¼‰ï¼Œå¦åˆ™cmdä¸‹ä¸­æ–‡ä¹±ç   
+			// è¿”å›æ‰§è¡Œç»“æœï¼Œ0è¡¨ç¤ºæ’å…¥æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›falseã€‚ 
 			return (mysql_query(&mysql, deleteString.c_str()) == 0);  
 		}
 	};

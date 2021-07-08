@@ -13,7 +13,7 @@
 #include "common.h"
 
 namespace commonfunction_c {
-    //»·ÐÎË«Á´±í£¬´æ´¢Êý¾Ý¸ßÐ§£¬ÔÚÎÞ·¨È·ÈÏÊý×é³¤¶ÈÊ±£¬Á´±íÎÞÐè·´¸´ÉêÇëÊÍ·Å´ó¿éÄÚ´æµÄÓÅÊÆ½ÏÃ÷ÏÔ¡£
+    //ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½Ý¸ï¿½Ð§ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½é³¤ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è·´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·Å´ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½Ô¡ï¿½
     template<class T>
     class Fixed2WayList {
     private:
@@ -29,21 +29,21 @@ namespace commonfunction_c {
         Node* head;
         Node* current;
         unsigned int maxSize = INT_FIXED2WAYLIST_DEFAULT_SIZE;
-        //²åÈëÐÂÔªËØÊ±ÐèÒªÅÐ¶ÏÊÇ·ñ³¬³öÈÝÁ¿ÏÞÖÆ
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½Ê±ï¿½ï¿½Òªï¿½Ð¶ï¿½ï¿½Ç·ñ³¬³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         inline bool isOutOfSize() {
             if (size() > this->maxSize)
                 return true;
             return false;
         }
-        //ÈÝÁ¿ÒÑÂúÊ±¼ÌÐø²åÈë¶ÔÏóÔòÐèÒªµ¯³ö·´ÏòµÄÔªËØÈ·±£ÈÝÁ¿Ã»ÓÐ³¬ÏÞ
-        //µ¯³öµÚÒ»¸öÔªËØ
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ð³ï¿½ï¿½ï¿½
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½
         void popFirst() { 
-            //²»Ó¦¸Ã³öÏÖÖ»ÓÐÒ»¸öÔªËØÒ²»áÈÝÁ¿³¬³ö£¬ÒòÎª×î´óÈÝÁ¿×îÐ¡ÊÇ1
+            //ï¿½ï¿½Ó¦ï¿½Ã³ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½1
             assert(this->head->next != this->head->prior);
             this->delElement(0);
         }
         void popLast() {
-            //²»Ó¦¸Ã³öÏÖÖ»ÓÐÒ»¸öÔªËØÒ²»áÈÝÁ¿³¬³ö£¬ÒòÎª×î´óÈÝÁ¿×îÐ¡ÊÇ1
+            //ï¿½ï¿½Ó¦ï¿½Ã³ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½1
             assert(this->head->next != this->head->prior);
             this->delElement(size() - 1);
         }
@@ -65,7 +65,7 @@ namespace commonfunction_c {
             setCurrentIdx(right.getCurrentIdx());
         }
 
-        //-1±íÊ¾¿Õ
+        //-1ï¿½ï¿½Ê¾ï¿½ï¿½
         int getCurrentIdx() const{
             if (current == head)
                 return INT_FIXED2WAYLIST_CURRENT_IDX_ERROR;
@@ -77,7 +77,7 @@ namespace commonfunction_c {
                 p = p->next;
                 result++;
             }
-            return INT_FIXED2WAYLIST_CURRENT_IDX_ERROR; //Ã»ÓÐÕÒµ½current
+            return INT_FIXED2WAYLIST_CURRENT_IDX_ERROR; //Ã»ï¿½ï¿½ï¿½Òµï¿½current
         }
 
         void setCurrentIdx(int idx) {
@@ -98,22 +98,22 @@ namespace commonfunction_c {
         }
 
         T& operator [](unsigned int idx) { return getElement(idx); }
-        //ÅÐ¶ÏÊÇ·ñÎª¿ÕÁ´
+        //ï¿½Ð¶ï¿½ï¿½Ç·ï¿½Îªï¿½ï¿½ï¿½ï¿½
         bool isEmpty()const { return head == head->next ? true : false; }
-        //½«ÔªËØÌí¼ÓÖÁ×îºó£¬×¢ÒânodeµÄÖ¸ÕëÉèÖÃ
+        //ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½nodeï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         void addToLast(const T& element) { 
             Node* ne = new Node(element, head->prior, head); 
             if (this->isOutOfSize())
                 this->popFirst();
         }
         inline void insertToLast(const T& element) { return this->addToLast(element); }
-        //»ñÈ¡×îºóÒ»¸öÔªËØ
+        //ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½
         T getLastElement()const { assert(!isEmpty()); return head->prior->data; }
-        //É¾³ý×îºóÒ»¸öÔªËØ£¬×¢ÒânodeµÄÖ¸ÕëÉèÖÃ
+        //É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½Ø£ï¿½×¢ï¿½ï¿½nodeï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         void delLastElement() { assert(!isEmpty()); Node* p = head->prior; delete p; }
-        //ÐÞ¸Ä×îºóÒ»¸öÔªËØ
+        //ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½
         void alterLastElement(const T& newElement) { assert(!isEmpty()); head->prior->data = newElement; }
-        //²åÈëÔªËØ
+        //ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
         inline void insert(T element, unsigned int pos) { this->insertElement(element, pos); }
         void insertElement(T element, unsigned int pos) {
             assert(pos >= 0);
@@ -130,7 +130,7 @@ namespace commonfunction_c {
                 this->popLast();
         }
 
-        //»ñÈ¡ÔªËØ
+        //ï¿½ï¿½È¡Ôªï¿½ï¿½
         T& get(unsigned int idx) { return this->getElement(idx); }
         T& getElement(unsigned int idx) const{
             assert(idx < size());
@@ -139,7 +139,7 @@ namespace commonfunction_c {
                 p = p->next;
             return p->data;
         }
-        //É¾³ýÔªËØ
+        //É¾ï¿½ï¿½Ôªï¿½ï¿½
         T del(unsigned int idx) { return this->delElement(idx); }
         T delElement(unsigned int idx) {
             assert(idx < size());
@@ -154,7 +154,7 @@ namespace commonfunction_c {
             return ret;
         }
 
-        //ÐÞ¸ÄÔªËØ
+        //ï¿½Þ¸ï¿½Ôªï¿½ï¿½
         void alter(const T& newElement, unsigned int idx) { this->alterElement(newElement, idx); }
         void alterElement(const T& newElement, unsigned int idx) {
             assert(idx < size());
@@ -165,7 +165,7 @@ namespace commonfunction_c {
             return;
         }
 
-        //²éÕÒÔªËØ £¬ ·µ»ØÖµÐ¡ÓÚ0±íÊ¾Î´ÕÒµ½ÔªËØ
+        //ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ÖµÐ¡ï¿½ï¿½0ï¿½ï¿½Ê¾Î´ï¿½Òµï¿½Ôªï¿½ï¿½
         int findElement(const T& element) const {
             char* ori, * in;
             int result = 0;
@@ -180,7 +180,7 @@ namespace commonfunction_c {
             }
             return -1;
         }
-        //ÕýÐò±éÀú
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         void Traverse(void (*visit)(T& element)) {
             Node* t = head->next;
             while (t != head) {
@@ -189,7 +189,7 @@ namespace commonfunction_c {
             }
         }
 
-        //ÄæÐò±éÀú
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         void TraverseBack(void (*visit)(T& element)) {
             Node* t = head->prior;
             while (t != head) {
@@ -198,7 +198,7 @@ namespace commonfunction_c {
             }
         }
 
-        //Çå¿ÕÁ´±í
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         void clear() { this->clearAllElement(); }
         void clearAllElement() {
             Node* t, * p;
@@ -239,7 +239,7 @@ namespace commonfunction_c {
             return current->data;
         }
 
-        //Ïú»ÙÁ´±í
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         ~Fixed2WayList() {
             this->clearAllElement();
             if (head != NULL) {
