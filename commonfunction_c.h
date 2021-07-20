@@ -25,6 +25,7 @@ class BaseFunctions
 {
 public:
     enum eFindPathMode { FPM_ALL = 0007, FPM_SYSENV = 0001, FPM_PATHWORK = 0002, FPM_PATHSTR = 0004 };
+    enum eConfigType {CT_JSON = 0, CT_XML = 1};
     BaseFunctions() { m_FileName = ""; m_FilePath = ""; }
     BaseFunctions(string fileName, string filePath = "") :m_FileName(fileName), m_FilePath(filePath) {}
     ~BaseFunctions() {}
@@ -40,7 +41,8 @@ public:
         delete[] path;
         return wstr;
     }
-    static const char* getConfigPath(int mode = FPM_ALL); //mode : FPM_ALL,exec in the following order: SYSENV,PATHSTR,PATHWORK
+
+
     static string GetParaByName(string fileName, string name);//work for new type ini,ex: "password=123456";
     static string GetParaByName_safe(string fileName, string name);
     static string GetParaByLine(string fileName, int lineNum);//work for old type,just have value ex : "123456"
@@ -140,14 +142,14 @@ public:
         return out;
     }
 
-    static bool isFolderExist(const char* folder)
+    static bool isFolderExist(const char* name)
     {
-        if (_access(folder, 0) == 0)
-            return true;
-        else
-            return false;
+        return (_access(name, 0) == 0);
     }
 
+    static bool isFolderExist(string name) {
+        return (_access(name.c_str(), 0) == 0);
+    }
     //逐级创建路径
     static int32_t createDirectory(char* directoryPath)
     {
@@ -755,8 +757,31 @@ public:
             head = NULL;
         }
     }
-};
+}; // end DuLink
 
+class configHelper {
+public:
+    configHelper(string file, BaseFunctions::eConfigType type) : _file(file), _type(type){
+        if (BaseFunctions::isFolderExist(file))
+            _initialed = true;
+        else
+            _initialed = false;
+    }
+
+    string findValue(string name) {
+        if (!_initialed)
+            throw "Error, configHelper not initialed!";
+        if (_type == BaseFunctions::CT_JSON) {
+            boost::property_tree::ptree root;
+            boost::property_tree::read_json(_file, root);
+            return root.get<string>(name);
+        }//json end
+    }
+private:
+    string _file;
+    BaseFunctions::eConfigType _type;
+    bool _initialed;
+};
 ///////////////////////////////////////////////////////////////////////////////////
 //    TO COMPILE QfDebug, please add make patch num to .pro file, e.x:           //
 //      DEFINES += "INT_MAKE_PATCH_SERIALNO=1.0f"                                //
