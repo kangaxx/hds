@@ -25,7 +25,6 @@ class BaseFunctions
 {
 public:
     enum eFindPathMode { FPM_ALL = 0007, FPM_SYSENV = 0001, FPM_PATHWORK = 0002, FPM_PATHSTR = 0004 };
-    enum eConfigType {CT_JSON = 0, CT_XML = 1};
     BaseFunctions() { m_FileName = ""; m_FilePath = ""; }
     BaseFunctions(string fileName, string filePath = "") :m_FileName(fileName), m_FilePath(filePath) {}
     ~BaseFunctions() {}
@@ -759,29 +758,7 @@ public:
     }
 }; // end DuLink
 
-class configHelper {
-public:
-    configHelper(string file, BaseFunctions::eConfigType type) : _file(file), _type(type){
-        if (BaseFunctions::isFolderExist(file))
-            _initialed = true;
-        else
-            _initialed = false;
-    }
 
-    string findValue(string name) {
-        if (!_initialed)
-            throw "Error, configHelper not initialed!";
-        if (_type == BaseFunctions::CT_JSON) {
-            boost::property_tree::ptree root;
-            boost::property_tree::read_json(_file, root);
-            return root.get<string>(name);
-        }//json end
-    }
-private:
-    string _file;
-    BaseFunctions::eConfigType _type;
-    bool _initialed;
-};
 ///////////////////////////////////////////////////////////////////////////////////
 //    TO COMPILE QfDebug, please add make patch num to .pro file, e.x:           //
 //      DEFINES += "INT_MAKE_PATCH_SERIALNO=1.0f"                                //
