@@ -28,15 +28,22 @@ public:
     BaseFunctions() { m_FileName = ""; m_FilePath = ""; }
     BaseFunctions(string fileName, string filePath = "") :m_FileName(fileName), m_FilePath(filePath) {}
     ~BaseFunctions() {}
+
     //get program run time path info!
     static wstring GetWorkPath() {
         wstring wstr;
         unsigned long size = GetCurrentDirectory(0, NULL);
         wchar_t* path = new wchar_t[size];
+#ifdef JUCE_WINDOWS
+        throw "GetWorkPath uncompatabled with juce!";
+#else
         if (GetCurrentDirectory(size, path) != 0)
         {
             wstr = path;
         }
+#endif // JUCE_WINDOWS
+
+
         delete[] path;
         return wstr;
     }

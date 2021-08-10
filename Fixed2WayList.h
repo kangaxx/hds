@@ -13,7 +13,6 @@
 #include "common.h"
 
 namespace commonfunction_c {
-    //����˫�������洢���ݸ�Ч�����޷�ȷ�����鳤��ʱ���������跴�������ͷŴ���ڴ�����ƽ����ԡ�
     template<class T>
     class Fixed2WayList {
     private:
@@ -29,21 +28,17 @@ namespace commonfunction_c {
         Node* head;
         Node* current;
         unsigned int maxSize = INT_FIXED2WAYLIST_DEFAULT_SIZE;
-        //������Ԫ��ʱ��Ҫ�ж��Ƿ񳬳���������
         inline bool isOutOfSize() {
             if (size() > this->maxSize)
                 return true;
             return false;
         }
-        //��������ʱ���������������Ҫ���������Ԫ��ȷ������û�г���
-        //������һ��Ԫ��
+
         void popFirst() { 
-            //��Ӧ�ó���ֻ��һ��Ԫ��Ҳ��������������Ϊ���������С��1
             assert(this->head->next != this->head->prior);
             this->delElement(0);
         }
         void popLast() {
-            //��Ӧ�ó���ֻ��һ��Ԫ��Ҳ��������������Ϊ���������С��1
             assert(this->head->next != this->head->prior);
             this->delElement(size() - 1);
         }
@@ -65,7 +60,7 @@ namespace commonfunction_c {
             setCurrentIdx(right.getCurrentIdx());
         }
 
-        //-1��ʾ��
+
         int getCurrentIdx() const{
             if (current == head)
                 return INT_FIXED2WAYLIST_CURRENT_IDX_ERROR;
@@ -77,7 +72,7 @@ namespace commonfunction_c {
                 p = p->next;
                 result++;
             }
-            return INT_FIXED2WAYLIST_CURRENT_IDX_ERROR; //û���ҵ�current
+            return INT_FIXED2WAYLIST_CURRENT_IDX_ERROR; 
         }
 
         void setCurrentIdx(int idx) {
@@ -98,22 +93,21 @@ namespace commonfunction_c {
         }
 
         T& operator [](unsigned int idx) { return getElement(idx); }
-        //�ж��Ƿ�Ϊ����
         bool isEmpty()const { return head == head->next ? true : false; }
-        //��Ԫ�����������ע��node��ָ������
+
         void addToLast(const T& element) { 
             Node* ne = new Node(element, head->prior, head); 
             if (this->isOutOfSize())
                 this->popFirst();
         }
         inline void insertToLast(const T& element) { return this->addToLast(element); }
-        //��ȡ���һ��Ԫ��
+
         T getLastElement()const { assert(!isEmpty()); return head->prior->data; }
-        //ɾ�����һ��Ԫ�أ�ע��node��ָ������
+
         void delLastElement() { assert(!isEmpty()); Node* p = head->prior; delete p; }
-        //�޸����һ��Ԫ��
+
         void alterLastElement(const T& newElement) { assert(!isEmpty()); head->prior->data = newElement; }
-        //����Ԫ��
+
         inline void insert(T element, unsigned int pos) { this->insertElement(element, pos); }
         void insertElement(T element, unsigned int pos) {
             assert(pos >= 0);
@@ -130,7 +124,7 @@ namespace commonfunction_c {
                 this->popLast();
         }
 
-        //��ȡԪ��
+
         T& get(unsigned int idx) { return this->getElement(idx); }
         T& getElement(unsigned int idx) const{
             assert(idx < size());
@@ -139,7 +133,7 @@ namespace commonfunction_c {
                 p = p->next;
             return p->data;
         }
-        //ɾ��Ԫ��
+
         T del(unsigned int idx) { return this->delElement(idx); }
         T delElement(unsigned int idx) {
             assert(idx < size());
@@ -154,7 +148,7 @@ namespace commonfunction_c {
             return ret;
         }
 
-        //�޸�Ԫ��
+
         void alter(const T& newElement, unsigned int idx) { this->alterElement(newElement, idx); }
         void alterElement(const T& newElement, unsigned int idx) {
             assert(idx < size());
@@ -165,7 +159,6 @@ namespace commonfunction_c {
             return;
         }
 
-        //����Ԫ�� �� ����ֵС��0��ʾδ�ҵ�Ԫ��
         int findElement(const T& element) const {
             char* ori, * in;
             int result = 0;
@@ -180,7 +173,6 @@ namespace commonfunction_c {
             }
             return -1;
         }
-        //�������
         void Traverse(void (*visit)(T& element)) {
             Node* t = head->next;
             while (t != head) {
@@ -189,7 +181,6 @@ namespace commonfunction_c {
             }
         }
 
-        //�������
         void TraverseBack(void (*visit)(T& element)) {
             Node* t = head->prior;
             while (t != head) {
@@ -198,7 +189,6 @@ namespace commonfunction_c {
             }
         }
 
-        //�������
         void clear() { this->clearAllElement(); }
         void clearAllElement() {
             Node* t, * p;
@@ -239,7 +229,6 @@ namespace commonfunction_c {
             return current->data;
         }
 
-        //��������
         ~Fixed2WayList() {
             this->clearAllElement();
             if (head != NULL) {
