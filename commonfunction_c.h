@@ -159,13 +159,13 @@ public:
     //逐级创建路径
     static int32_t createDirectory(char* directoryPath)
     {
-        uint32_t dirPathLen = 0;
+        size_t dirPathLen = 0;
         if (directoryPath != NULL) {
             dirPathLen = strlen(directoryPath);
         }
         assert(dirPathLen <= FILENAME_MAX);
         char tmpDirPath[FILENAME_MAX] = { 0 };
-        for (uint32_t i = 0; i < dirPathLen; ++i)
+        for (size_t i = 0; i < dirPathLen; ++i)
         {
             tmpDirPath[i] = directoryPath[i];
             if (tmpDirPath[i] == '\\' || tmpDirPath[i] == '/')
@@ -239,6 +239,23 @@ public:
             p.tm_year, p.tm_mon, p.tm_mday, p.tm_sec);
         strDateStr = chTmp;
         return 0;
+    }
+
+    static string time2str(const time_t& time) {
+        char chTmp[20] = { '\0' };
+        struct tm p;
+        localtime_s(&p, &time);
+        p.tm_year = p.tm_year + 1900;
+        p.tm_mon = p.tm_mon + 1;
+        snprintf(chTmp, sizeof(chTmp), "%04d-%02d-%02d-%04d",
+            p.tm_year, p.tm_mon, p.tm_mday, p.tm_sec);
+        return chTmp;
+    }
+
+    static string getNowTimeString() {
+        time_t now;
+        time(&now);
+        return time2str(now);
     }
 
     static time_t str2time(string str); //transfer string 2 time,from '1970-01-01 00:08:00'
@@ -785,5 +802,113 @@ template<> void qfDebug<const char*>(const char* info,const char *PatchNum);
 
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//                              Base64 压缩解压缩                             //
+////////////////////////////////////////////////////////////////////////////////
+class ZBase64
+{
+public:
+    /*编码
+    DataByte
+        [in]输入的数据长度,以字节为单位
+    */
+    string Encode(const unsigned char* Data, int DataByte) {
+        //编码表
+        const char EncodeTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        //返回值
+        string strEncode;
+        unsigned char Tmp[4] = { 0 };
+        int LineLength = 0;
+        for (int i = 0; i < (int)(DataByte / 3); i++)
+        {
+            Tmp[1] = *Data++;
+            Tmp[2] = *Data++;
+            Tmp[3] = *Data++;
+            strEncode += EncodeTable[Tmp[1] >> 2];
+            strEncode += EncodeTable[((Tmp[1] << 4) | (Tmp[2] >> 4)) & 0x3F];
+            strEncode += EncodeTable[((Tmp[2] << 2) | (Tmp[3] >> 6)) & 0x3F];
+            strEncode += EncodeTable[Tmp[3] & 0x3F];
+            if (LineLength += 4, LineLength == 76) { strEncode += "\r\n"; LineLength = 0; }
+        }
+        //对剩余数据进行编码
+        int Mod = DataByte % 3;
+        if (Mod == 1)
+        {
+            Tmp[1] = *Data++;
+            strEncode += EncodeTable[(Tmp[1] & 0xFC) >> 2];
+            strEncode += EncodeTable[((Tmp[1] & 0x03) << 4)];
+            strEncode += "==";
+        }
+        else if (Mod == 2)
+        {
+            Tmp[1] = *Data++;
+            Tmp[2] = *Data++;
+            strEncode += EncodeTable[(Tmp[1] & 0xFC) >> 2];
+            strEncode += EncodeTable[((Tmp[1] & 0x03) << 4) | ((Tmp[2] & 0xF0) >> 4)];
+            strEncode += EncodeTable[((Tmp[2] & 0x0F) << 2)];
+            strEncode += "=";
+        }
+
+        return strEncode;
+    }
+    /*解码
+    DataByte
+        [in]输入的数据长度,以字节为单位
+    OutByte
+        [out]输出的数据长度,以字节为单位,请不要通过返回值计算
+        输出数据的长度
+    */
+    string Decode(const char* Data, int DataByte, int& OutByte){
+        //解码表
+        const char DecodeTable[] =
+        {
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            62, // '+'
+            0, 0, 0,
+            63, // '/'
+            52, 53, 54, 55, 56, 57, 58, 59, 60, 61, // '0'-'9'
+            0, 0, 0, 0, 0, 0, 0,
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+            13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, // 'A'-'Z'
+            0, 0, 0, 0, 0, 0,
+            26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+            39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, // 'a'-'z'
+        };
+        //返回值
+        string strDecode;
+        int nValue;
+        int i = 0;
+        while (i < DataByte)
+        {
+            if (*Data != '\r' && *Data != '\n')
+            {
+                nValue = DecodeTable[*Data++] << 18;
+                nValue += DecodeTable[*Data++] << 12;
+                strDecode += (nValue & 0x00FF0000) >> 16;
+                OutByte++;
+                if (*Data != '=')
+                {
+                    nValue += DecodeTable[*Data++] << 6;
+                    strDecode += (nValue & 0x0000FF00) >> 8;
+                    OutByte++;
+                    if (*Data != '=')
+                    {
+                        nValue += DecodeTable[*Data++];
+                        strDecode += nValue & 0x000000FF;
+                        OutByte++;
+                    }
+                }
+                i += 4;
+            }
+            else// 回车换行,跳过
+            {
+                Data++;
+                i++;
+            }
+        }
+        return strDecode;
+    }
+};
 
 #endif // COMMONFUNCTION_C_H
