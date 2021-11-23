@@ -27,6 +27,7 @@ namespace commonfunction_c {
                 boost::property_tree::read_json(_file, root);
                 return root.get<T>(name);
             }//json end
+            return NULL;
         }
 
     private:
