@@ -255,6 +255,22 @@
 #define TYPE_INFLECTION_MAX 1 //最大值波峰
 #define TYPE_INFLECTION_MIN 2 //最小值波峰
 
+//卷绕项目
+#define GRAB_STATUS_NONE 0
+#define GRAB_STATUS_FAILED 8
+#define GRAB_STATUS_SUCCESSED 1
+#define EAR_LOCATION_WAIT -2
+#define EAR_LOCATION_GRAB_FAILED -1
+#define EAR_LOCATION_CORRECT 0
+#define EAR_LOCATION_ERROR 1
+#define CONCAT_IMAGE_NONE 0
+#define CONCAT_IMAGE_SUCCESS 1
+#define CONCAT_IMAGE_FAIL 2
+#define ROLLING_RESULT_NG false
+#define ROLLING_RESULT_OK true
+#define REDIS_WRITE_KEY "to_zj"
+#define REDIS_READ_KEY "to_gxx"
+
 #if defined(__linux__) || defined(__linux)
 #  define __IS_LINUX__
 #elif !defined(SAG_COM) && (defined(WIN64) || defined(_WIN64) || defined(__WIN64__))

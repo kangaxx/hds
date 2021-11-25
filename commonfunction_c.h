@@ -113,7 +113,12 @@ public:
         sscanf_s(in, "%ld", &out);
         return out;
     }
-    static int Chars2Int(const char* in, int size = DEFAULT_INTCHAR_SIZE);
+    static int Chars2Int(const char* in, int size = DEFAULT_INTCHAR_SIZE) {
+        int out;
+        sscanf_s(in, "%d", &out);
+        return out;
+    }
+
     static string Int2Str(int i) {
         char number[10] = { 0 };
         sprintf_s(number, 10, "%d", i);
