@@ -41,6 +41,26 @@ namespace commonfunction_c {
 				// do nothing
 			}
 		}
+
+		void ClearLog(std::string l) {
+			try {
+				//整理日志内容
+				std::string log;
+				if (m_format.empty()) {
+					//如果没有设置格式，默认就是 [年月日 时分秒] : 拼接 log 
+					log = l + "\n";
+				}
+				//输出到form
+				// to do 
+				//输出到console
+				std::cout << log << std::endl;
+				//输出到文件
+				write2File(log);
+			}
+			catch (...) {
+				// do nothing
+			}
+		}
 	private:
 		void getDateTime(string& strDate) {
 			char chTmp[20] = { '\0' };
