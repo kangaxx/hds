@@ -18,9 +18,8 @@ using namespace std;
 #ifndef INT_MAKE_PATCH_SERIALNO
 #define INT_MAKE_PATCH_SERIALNO "1.05.0000"
 #endif
-
+static char g_file_read_line_char[MAX_LENGTH_TXT_LINE];
 namespace commonfunction_c {
-
 class BaseFunctions
 {
 public:
@@ -261,6 +260,27 @@ public:
         time_t now;
         time(&now);
         return time2str(now);
+    }
+
+    static char* freadline(FILE* fp)
+    {
+        int count = 0;
+        for (int i = 0; i < MAX_LENGTH_TXT_LINE; ++i)
+            g_file_read_line_char[i] = '0';
+        g_file_read_line_char[count++] = getc(fp);
+        if (g_file_read_line_char[0] == EOF)
+            return NULL;
+        while ((count < MAX_LENGTH_TXT_LINE) && (g_file_read_line_char[count - 1] != '\n')) {
+            int read_char = getc(fp);
+            if (read_char >= 0)
+                g_file_read_line_char[count++] = read_char;
+            else {
+                count++;
+                break;
+            }
+        }
+        g_file_read_line_char[count - 1] = '\0';
+        return g_file_read_line_char;
     }
 
     static time_t str2time(string str); //transfer string 2 time,from '1970-01-01 00:08:00'

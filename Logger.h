@@ -14,6 +14,9 @@
 namespace commonfunction_c {
 	class Logger {
 	public:
+		Logger() {
+			Logger(DEFAULT_LOG_PATH_WIN);
+		}
 		//路径设置m_out （文件系统路径或者其他输出设备路径等）
 		Logger(std::string o) : m_out(o){
 		}
@@ -42,7 +45,7 @@ namespace commonfunction_c {
 			}
 		}
 
-		void ClearLog(std::string l) {
+		void ClearLog(std::string fileName, std::string l) {
 			try {
 				//整理日志内容
 				std::string log;
@@ -55,7 +58,7 @@ namespace commonfunction_c {
 				//输出到console
 				std::cout << log << std::endl;
 				//输出到文件
-				write2File(log);
+				write2File(fileName, log);
 			}
 			catch (...) {
 				// do nothing
@@ -107,6 +110,20 @@ namespace commonfunction_c {
 			return;
 		}
 
+		void write2File(string fileName, string log) {
+			assert(!m_out.empty());
+			assert(BaseFunctions::isFolderExist(m_out.c_str()));
+			fileName = fileName;
+			fileName = BaseFunctions::combineFilePath(m_out, fileName);
+			FILE* fp = NULL;
+			errno_t result;
+			fopen_s(&fp, fileName.c_str(), "a+");
+			if (fp != NULL) {
+				fputs(log.c_str(), fp);
+				fclose(fp);
+			}
+			return;
+		}
 		//out文件名格式设置， 替换规则
 		//%date 用当前日期替代， 格式是2021-05-21这样
 		//%time 用当前时间替代   格式是18:02:31这样 

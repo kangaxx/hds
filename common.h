@@ -263,14 +263,17 @@
 #define EAR_LOCATION_GRAB_FAILED -1
 #define EAR_LOCATION_CORRECT 0
 #define EAR_LOCATION_ERROR 1
-#define CONCAT_IMAGE_NONE 0
-#define CONCAT_IMAGE_SUCCESS 1
+#define CONCAT_IMAGE_NONE 99
+#define CONCAT_IMAGE_SUCCESS 0
 #define CONCAT_IMAGE_FAIL 2
 #define ROLLING_RESULT_NG false
 #define ROLLING_RESULT_OK true
 #define REDIS_WRITE_KEY "to_zj"
 #define REDIS_READ_KEY "to_gxx"
-
+#define WINDING_CALIBRATION_FILENAME "calibration.log"
+#define WINDING_CALIBRATION_PATH "d:\\calibration"
+#define DEFAULT_LOG_PATH_WIN "d:"
+#define MAX_LENGTH_TXT_LINE 1024
 #if defined(__linux__) || defined(__linux)
 #  define __IS_LINUX__
 #elif !defined(SAG_COM) && (defined(WIN64) || defined(_WIN64) || defined(__WIN64__))
