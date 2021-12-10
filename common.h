@@ -270,10 +270,15 @@
 #define ROLLING_RESULT_OK true
 #define REDIS_WRITE_KEY "to_zj"
 #define REDIS_READ_KEY "to_gxx"
-#define WINDING_CALIBRATION_FILENAME "calibration.log"
+#define WINDING_CALIBRATION_POINTS_FILENAME "calibration_points.log"
+#define WINDING_CALIBRATION_INFO_FILENAME "calibration_info.log"
 #define WINDING_CALIBRATION_PATH "d:\\calibration"
 #define DEFAULT_LOG_PATH_WIN "d:"
 #define MAX_LENGTH_TXT_LINE 1024
+#define CALIBRATION_LINE_BAR_COUNT 101 * 2
+#define MAX_BATTERY_WIDTH 4000
+#define IMAGE_GRABED_PATH "d:\\grabs"
+#define IMAGE_GRABED_FOLDER "grabs"
 #if defined(__linux__) || defined(__linux)
 #  define __IS_LINUX__
 #elif !defined(SAG_COM) && (defined(WIN64) || defined(_WIN64) || defined(__WIN64__))

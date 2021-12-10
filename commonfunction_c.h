@@ -17,6 +17,7 @@
 using namespace std;
 #ifndef INT_MAKE_PATCH_SERIALNO
 #define INT_MAKE_PATCH_SERIALNO "1.05.0000"
+#define CALIBRATION_LINES_COUNT 202
 #endif
 static char g_file_read_line_char[MAX_LENGTH_TXT_LINE];
 namespace commonfunction_c {
@@ -118,6 +119,12 @@ public:
         return out;
     }
 
+    static float Chars2Float(const char* in) {
+        float out;
+        sscanf_s(in, "%f", &out);
+        return out;
+    }
+
     static string Int2Str(int i) {
         char number[10] = { 0 };
         sprintf_s(number, 10, "%d", i);
@@ -161,6 +168,47 @@ public:
         return (_access(name.c_str(), 0) == 0);
     }
     //逐级创建路径
+    static void createDirectoryW(wstring wstrDir) // 创建复目录
+    {
+        if (wstrDir.length() <= 3)//是根目录，无需创建目录
+        {
+            return;
+        }
+        if (wstrDir[wstrDir.length() - 1] == '\\')   // 将路径改为目录
+        {
+            wstrDir.erase(wstrDir.end() - 1);
+        }
+        // 修改文件属性
+        WIN32_FIND_DATA wfd;
+        HANDLE hFind = FindFirstFile(wstrDir.c_str(), &wfd); // 查找
+        if (hFind != INVALID_HANDLE_VALUE)
+        {
+            FindClose(hFind);
+            if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                return;
+        }
+        // 创建当前目录的地目录失败
+        if (CreateDirectory(wstrDir.c_str(), NULL) == false)
+        {// 退到上一级目录
+            wstring wstrNewDir = wstrDir;
+            while (wstrNewDir[wstrNewDir.length() - 1] != '\\')     // 撤到当前目录的上一个目录
+            {
+                wstrNewDir.erase(wstrNewDir.length() - 1);
+            }
+            // delete '\\' 
+            wstrNewDir.erase(wstrNewDir.length() - 1); // delete '\\' 
+            // 递归进入
+            createDirectoryW(wstrNewDir);  // 递归本函数，再创建目录
+            // 递归退出后创建之前失败的目录
+            CreateDirectory(wstrDir.c_str(), NULL);  // 递归返回，在存在的目录上再建目录
+        }// 多级目录创建成功
+        return;
+    }
+
+    static int32_t createDirectory(const char* directoryPath) {
+        return createDirectory(const_cast<char*>(directoryPath));
+    }
+
     static int32_t createDirectory(char* directoryPath)
     {
         size_t dirPathLen = 0;
@@ -172,15 +220,16 @@ public:
         for (size_t i = 0; i < dirPathLen; ++i)
         {
             tmpDirPath[i] = directoryPath[i];
-            if (tmpDirPath[i] == '\\' || tmpDirPath[i] == '/')
+            if (tmpDirPath[i] == '\\' || tmpDirPath[i] == '/' || i == dirPathLen - 1)
             {
                 if (!isFolderExist(tmpDirPath))
                 {
-                    int ret = 0;
 #ifdef __IS_LINUX__
+                    int ret = 0;
                     ret = _mkdir(tmpDirPath);
+#else
+                    BOOL ret = CreateDirectory(LPCWSTR(tmpDirPath), NULL);
 #endif
-                    //BOOL ret = CreateDirectory(tmpDirPath, NULL);
                     if (ret != 0)
                         return -1;
                 }
@@ -188,6 +237,7 @@ public:
         }
         return 0;
     }
+
     //combine file name and path name , will confirm if there is an '/' between path and file;
     static string combineFilePath(string path, string fileName) {
         if (path[path.size() - 1] == '\\' || path[path.size()] == '/')
@@ -196,6 +246,7 @@ public:
             return path + '\\' + fileName;
 
     }
+
 #ifdef  __IS_WIN__
     static TCHAR* DWORD2WinLog(DWORD in, TCHAR* out) {
         wsprintf(out, _T("%d"), in);//应用

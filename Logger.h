@@ -14,8 +14,8 @@
 namespace commonfunction_c {
 	class Logger {
 	public:
-		Logger() {
-			Logger(DEFAULT_LOG_PATH_WIN);
+		Logger() : m_out(DEFAULT_LOG_PATH_WIN) {
+
 		}
 		//路径设置m_out （文件系统路径或者其他输出设备路径等）
 		Logger(std::string o) : m_out(o){
@@ -94,25 +94,16 @@ namespace commonfunction_c {
 		}
 
 		void write2File(string log) {
-			assert(!m_out.empty());
-			assert(BaseFunctions::isFolderExist(m_out.c_str()));
 			string fileName;
 			getDate(fileName);
 			fileName = fileName + ".log";
 			fileName = BaseFunctions::combineFilePath(m_out, fileName);
-			FILE *fp = NULL;
-			errno_t result;
-			fopen_s(&fp, fileName.c_str(), "a+");
-			if (fp != NULL) {
-				fputs(log.c_str(), fp);
-				fclose(fp);
-			}
-			return;
+			return write2File(fileName, log);
 		}
 
 		void write2File(string fileName, string log) {
 			assert(!m_out.empty());
-			assert(BaseFunctions::isFolderExist(m_out.c_str()));
+			BaseFunctions::createDirectoryW(BaseFunctions::s2ws(m_out));
 			fileName = fileName;
 			fileName = BaseFunctions::combineFilePath(m_out, fileName);
 			FILE* fp = NULL;
