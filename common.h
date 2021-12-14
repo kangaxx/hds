@@ -279,6 +279,12 @@
 #define MAX_BATTERY_WIDTH 4000
 #define IMAGE_GRABED_PATH "d:\\grabs"
 #define IMAGE_GRABED_FOLDER "grabs"
+#define ROI_LEFT_START_BAR_NUM 0
+#define ROI_LEFT_END_BAR_NUM 7
+#define ROI_RIGHT_START_BAR_NUM 30
+#define ROI_RIGHT_END_BAR_NUM 34
+#define LEFT_EAR_TO_EDGE_MIN 10
+#define LEFT_EAR_TO_EDGE_MAX 27
 #if defined(__linux__) || defined(__linux)
 #  define __IS_LINUX__
 #elif !defined(SAG_COM) && (defined(WIN64) || defined(_WIN64) || defined(__WIN64__))
