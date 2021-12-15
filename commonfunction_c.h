@@ -48,6 +48,9 @@ public:
         return wstr;
     }
 
+    static void SetWorkPath(wstring path) {
+        SetCurrentDirectory(LPCWSTR(path.c_str()));
+    }
 
     static string GetParaByName(string fileName, string name);//work for new type ini,ex: "password=123456";
     static string GetParaByName_safe(string fileName, string name);

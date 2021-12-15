@@ -97,7 +97,6 @@ namespace commonfunction_c {
 			string fileName;
 			getDate(fileName);
 			fileName = fileName + ".log";
-			fileName = BaseFunctions::combineFilePath(m_out, fileName);
 			return write2File(fileName, log);
 		}
 
