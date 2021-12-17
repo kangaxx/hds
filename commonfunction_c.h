@@ -134,6 +134,18 @@ public:
         return string(number);
     }
 
+    static string Long2Str(long l) {
+        char number[20] = { 0 };
+        sprintf_s(number, 20, "%ld", l);
+        return string(number);
+    }
+
+    static string UnsignedLong2Str(unsigned long l) {
+        char number[20] = { 0 };
+        sprintf_s(number, 20, "%lu", l);
+        return string(number);
+    }
+
     static int Str2Int(string s) {
         Str2Int(s, 0);
     }

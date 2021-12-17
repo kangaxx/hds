@@ -270,19 +270,26 @@
 #define ROLLING_RESULT_OK true
 #define REDIS_WRITE_KEY "to_zj"
 #define REDIS_READ_KEY "to_gxx"
+#define REDIS_WORK_STATUS_KEY "WorkStatus"
+#define REDIS_WORK_STATUS_START "Start"
+#define REDIS_WORK_STATUS_STOP "Stop"
+#define REDIS_IS_WORK
+#define REDIS_LIST_CALIBRATION_KEY "Calibration"
+#define JSON_CALIBRATION_TOP_KEY "CalibrationTop"
+#define JSON_CALIBRATION_BOTTOM_KEY "CalibrationBottom"
 #define WINDING_CALIBRATION_POINTS_FILENAME "calibration_points.log"
 #define WINDING_CALIBRATION_INFO_FILENAME "calibration_info.log"
 #define WINDING_CALIBRATION_PATH "d:\\calibration"
 #define DEFAULT_LOG_PATH_WIN "d:"
 #define MAX_LENGTH_TXT_LINE 1024
-#define CALIBRATION_LINE_BAR_COUNT 101 * 2
+#define CALIBRATION_LINE_BAR_COUNT 88 * 2
 #define MAX_BATTERY_WIDTH 4000
 #define IMAGE_GRABED_PATH "d:\\grabs"
 #define IMAGE_GRABED_FOLDER "grabs"
-#define ROI_LEFT_START_BAR_NUM 0
-#define ROI_LEFT_END_BAR_NUM 7
-#define ROI_RIGHT_START_BAR_NUM 30
-#define ROI_RIGHT_END_BAR_NUM 34
+#define ROI_LEFT_START_BAR_NUM 5
+#define ROI_LEFT_END_BAR_NUM 15
+#define ROI_RIGHT_START_BAR_NUM -12
+#define ROI_RIGHT_END_BAR_NUM -2
 #define LEFT_EAR_TO_EDGE_MIN 10
 #define LEFT_EAR_TO_EDGE_MAX 27
 #if defined(__linux__) || defined(__linux)
