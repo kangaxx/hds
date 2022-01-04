@@ -300,25 +300,25 @@ public:
     }
 #endif // __IS_WIN__
     static int time2str(const time_t& time, string& strDateStr) {
-        char chTmp[20] = { '\0' };
+        char chTmp[26] = { '\0' };
         struct tm p;
         localtime_s(&p, &time);
         p.tm_year = p.tm_year + 1900;
         p.tm_mon = p.tm_mon + 1;
-        snprintf(chTmp, sizeof(chTmp), "%04d-%02d-%02d-%04d",
-            p.tm_year, p.tm_mon, p.tm_mday, p.tm_sec);
+        snprintf(chTmp, sizeof(chTmp), "%04d-%02d-%02d-%02d-%02d-%04d",
+            p.tm_year, p.tm_mon, p.tm_mday, p.tm_hour, p.tm_min, p.tm_sec);
         strDateStr = chTmp;
         return 0;
     }
 
     static string time2str(const time_t& time) {
-        char chTmp[20] = { '\0' };
+        char chTmp[26] = { '\0' };
         struct tm p;
         localtime_s(&p, &time);
         p.tm_year = p.tm_year + 1900;
         p.tm_mon = p.tm_mon + 1;
-        snprintf(chTmp, sizeof(chTmp), "%04d-%02d-%02d-%04d",
-            p.tm_year, p.tm_mon, p.tm_mday, p.tm_sec);
+        snprintf(chTmp, sizeof(chTmp), "%04d-%02d-%02d-%02d-%02d-%04d",
+            p.tm_year, p.tm_mon, p.tm_mday, p.tm_hour, p.tm_min, p.tm_sec);
         return chTmp;
     }
 

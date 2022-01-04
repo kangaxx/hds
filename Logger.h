@@ -45,7 +45,7 @@ namespace commonfunction_c {
 			}
 		}
 
-		void ClearLog(std::string fileName, std::string l) {
+		void SimpleLog(std::string fileName, std::string l) {
 			try {
 				//整理日志内容
 				std::string log;
@@ -63,6 +63,10 @@ namespace commonfunction_c {
 			catch (...) {
 				// do nothing
 			}
+		}
+		//清空log文件
+		void clear_log_file() {
+
 		}
 	private:
 		void getDateTime(string& strDate) {

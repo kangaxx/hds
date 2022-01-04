@@ -14,6 +14,10 @@ using HalconCpp::HTuple;
 namespace halconfunction_c {
 	class HalconPosition {
 	public:
+		HalconPosition() {
+			column_ = -1.0;
+			row_ = -1.0;
+		}
 		HalconPosition(HTuple column, HTuple row) : column_(column), row_(row) {}
 
 		HalconPosition(const float* x, const float* y){

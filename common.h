@@ -280,6 +280,7 @@
 #define WINDING_CALIBRATION_POINTS_FILENAME "calibration_points.log"
 #define WINDING_CALIBRATION_INFO_FILENAME "calibration_info.log"
 #define WINDING_CALIBRATION_PATH "d:\\calibration"
+#define WINDING_PICTURE_CUT_PATH "d:\\picture_cut"
 #define DEFAULT_LOG_PATH_WIN "d:"
 #define MAX_LENGTH_TXT_LINE 1024
 #define CALIBRATION_LINE_BAR_COUNT 88 * 2
