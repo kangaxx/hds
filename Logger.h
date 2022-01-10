@@ -70,7 +70,7 @@ namespace commonfunction_c {
 		}
 	private:
 		void getDateTime(string& strDate) {
-			char chTmp[20] = { '\0' };
+			char chTmp[24] = { '\0' };
 			time_t t;
 			time(&t);
 			struct tm p;
