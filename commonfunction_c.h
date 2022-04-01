@@ -174,6 +174,63 @@ public:
         return out;
     }
 
+    static string string_format(string format, ...) {
+        //分析format结构
+        int var_count = 0;
+        int length = format.length();
+        for (int i = 0; i < format.length(); ++i) {
+            if (format[i] == '%' && i < format.length() - 1) {
+                i++;
+                if (format[i] == 'c' || format[i] == 'd' || format[i] == 'f' || format[i] == 's')
+                    var_count++;
+            }
+        }
+        //评估总长度
+        va_list ap;
+        va_start(ap, var_count);
+        for (int i = 0; i < format.length(); ++i) {
+            if (format[i] == '%' && i < format.length() - 1) {
+                i++;
+                if (format[i] == 'c') {
+                    length ++;
+                    va_arg(ap, char);
+                }
+                else if (format[i] == 's') {
+                    char* arg_chars = va_arg(ap, char*);
+                    while (*arg_chars != '\0') {
+                        arg_chars++;
+                        length++;
+                    }
+                }
+                else if (format[i] == 'd') {
+                    int arg_int = va_arg(ap, int);
+                    while (arg_int > 0) {
+                        arg_int /= 10;
+                        length++;
+                    }
+                }
+                else if (format[i] == 'f') {
+                    int arg_float = va_arg(ap, int);
+                    int arg_int = int(arg_float);
+                    while (arg_int > 0) {
+                        arg_int /= 10;
+                        length++;
+                    }
+                }
+            }
+        }
+        va_end(ap);
+        length += 6;
+        //转换字符串
+        va_start(ap, var_count);
+
+        //sprintf_s(message, 2048, format.c_str(), exception.ErrorCode(),
+    //exception.ProcName().TextA(),
+    //exception.ErrorMessage().TextA());
+        va_end(ap);
+        return string("");
+    }
+
     static bool isFolderExist(const char* name)
     {
         return (_access(name, 0) == 0);

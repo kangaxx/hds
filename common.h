@@ -100,7 +100,6 @@
 
 #define INT_MAX_FILELIST_NUM 4
 
-
 #define INT_WORKPATH_LENGTH 1024
 #define MAX_REDUCE_PROC_COUNT 1
 #define INT_CALCULATOR_JOBID_NAN -1
@@ -159,6 +158,11 @@
 #define INT_TYPE_LICENSE_BYDATE 1
 #define DEFAULT_LONGCHAR_SIZE 64
 #define DEFAULT_INTCHAR_BASE 10
+
+//commonfunction_c::Logger
+#define LOG_LEVEL_STD_OUT 1
+#define LOG_LEVEL_STD_WRITE_FILE 2
+#define LOG_LEVEL_STD_DATABASE 4
 //GeoImageSo
 #define LIMIT_SCALE_DATA_IN_MAP 1.0f //设定放大极限
 #define MIN_SCALE_GRID_DISTANCE 50 //标尺刻度最小间距，太密了根本看不清
@@ -276,6 +280,12 @@
 #define REDIS_IS_WORK
 #define REDIS_LIST_CALIBRATION_KEY "Calibration"
 #define JSON_CALIBRATION_TOP_KEY "CalibrationTop"
+#define JSON_CAMERA_PARAM_WIDTH "Camera_width"
+#define JSON_CAMERA_PARAM_HEIGHT "Camera_height"
+#define JSON_CAMERA_PARAM_PACKAGE_SIZE "Package_size"
+#define JSON_CAMERA_PARAM_PACKAGE_DELAY "Package_delay"
+#define JSON_CAMERA_PARAM_CENTER "Center"
+#define JSON_CAMERA_PARAM_EXPOSURE_TIME "Exposure_time"
 #define JSON_CALIBRATION_BOTTOM_KEY "CalibrationBottom"
 #define WINDING_CALIBRATION_POINTS_FILENAME "calibration_points.log"
 #define WINDING_CALIBRATION_INFO_FILENAME "calibration_info.log"
@@ -287,12 +297,15 @@
 #define MAX_BATTERY_WIDTH 4000
 #define IMAGE_GRABED_PATH "d:\\grabs"
 #define IMAGE_GRABED_FOLDER "grabs"
-#define ROI_LEFT_START_BAR_NUM 5
-#define ROI_LEFT_END_BAR_NUM 15
-#define ROI_RIGHT_START_BAR_NUM -12
-#define ROI_RIGHT_END_BAR_NUM -2
+#define ROI_LEFT_START_LINE_NUM 8
+#define ROI_LEFT_END_LINE_NUM 20
+#define ROI_RIGHT_START_LINE_NUM -30
+#define ROI_RIGHT_END_LINE_NUM -8
 #define LEFT_EAR_TO_EDGE_MIN 10
 #define LEFT_EAR_TO_EDGE_MAX 27
+#define ELECTRIC_RELAY_COM_NUM 3
+#define STANDARD_CAMERA_MODE 0 //标准拍摄模式
+#define MSA_NO_TRIGGER_CAMERA_MODE 1 //msa 连续拍摄模式
 #if defined(__linux__) || defined(__linux)
 #  define __IS_LINUX__
 #elif !defined(SAG_COM) && (defined(WIN64) || defined(_WIN64) || defined(__WIN64__))

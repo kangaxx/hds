@@ -14,11 +14,16 @@
 namespace commonfunction_c {
 	class Logger {
 	public:
-		Logger() : m_out(DEFAULT_LOG_PATH_WIN) {
+ 		Logger() : m_out(DEFAULT_LOG_PATH_WIN) {
 
 		}
 		//路径设置m_out （文件系统路径或者其他输出设备路径等）
 		Logger(std::string o) : m_out(o){
+			log_level_ = LOG_LEVEL_STD_OUT | LOG_LEVEL_STD_WRITE_FILE;
+		}
+
+		void set_level(int level) {
+			log_level_ = level;
 		}
 
 		void Initial(std::string f) {
@@ -37,9 +42,11 @@ namespace commonfunction_c {
 				//输出到form
 				// to do 
 				//输出到console
-				std::cout << log << std::endl;
+				if (log_level_ & LOG_LEVEL_STD_OUT)
+					std::cout << log << std::endl;
 				//输出到文件
-				write2File(log);
+				if (log_level_ & LOG_LEVEL_STD_WRITE_FILE)
+					write2File(log);
 			} catch (...) {
 				// do nothing
 			}
@@ -69,6 +76,7 @@ namespace commonfunction_c {
 
 		}
 	private:
+		int log_level_; //1;默认输出 2:写入日志文件 4: 写入数据库
 		void getDateTime(string& strDate) {
 			char chTmp[24] = { '\0' };
 			time_t t;
