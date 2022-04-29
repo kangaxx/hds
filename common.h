@@ -305,6 +305,7 @@
 #define LEFT_EAR_TO_EDGE_MAX 27
 #define ELECTRIC_RELAY_COM_NUM 3
 #define STANDARD_CAMERA_MODE 0 //标准拍摄模式
+#define STANDARD_CAMERA_MODE_CHAR "0" //标准拍摄模式字符串
 #define MSA_NO_TRIGGER_CAMERA_MODE 1 //msa 连续拍摄模式
 #if defined(__linux__) || defined(__linux)
 #  define __IS_LINUX__
