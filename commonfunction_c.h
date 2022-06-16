@@ -13,6 +13,7 @@
 #include <string>
 #include <assert.h>
 #include <tchar.h>
+#include <vector>
 #include "common.h"
 using namespace std;
 #ifndef INT_MAKE_PATCH_SERIALNO
@@ -240,10 +241,12 @@ public:
         return (_access(name.c_str(), 0) == 0);
     }
 
-    static WCHAR* get_file_names(string dir, string file_type, vector<string>& file_names, int& result_count)
+    static void get_file_names(string dir, string file_type, vector<string>& file_names, int& result_count)
     {
         result_count = 0;
         string buffer;
+        if (file_type.empty())
+            file_type = ".*";
         if (file_type.find_first_of('.') == 0)
             buffer = dir + "\\*" + file_type;
         else
