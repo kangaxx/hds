@@ -301,12 +301,15 @@
 #define ROI_LEFT_END_LINE_NUM 20
 #define ROI_RIGHT_START_LINE_NUM -30
 #define ROI_RIGHT_END_LINE_NUM -8
-#define LEFT_EAR_TO_EDGE_MIN 10
-#define LEFT_EAR_TO_EDGE_MAX 27
+#define LEFT_EAR_TO_EDGE_MIN 4
+#define LEFT_EAR_TO_EDGE_MAX 11
+#define RIGHT_EAR_TO_EDGE_MIN 4
+#define RIGHT_EAR_TO_EDGE_MAX 12
 #define ELECTRIC_RELAY_COM_NUM 3
 #define STANDARD_CAMERA_MODE 0 //标准拍摄模式
 #define STANDARD_CAMERA_MODE_CHAR "0" //标准拍摄模式字符串
 #define MSA_NO_TRIGGER_CAMERA_MODE 1 //msa 连续拍摄模式
+#define EAR_EDGE_AREA_WIDTH 15 //极耳边缘检测宽度
 #if defined(__linux__) || defined(__linux)
 #  define __IS_LINUX__
 #elif !defined(SAG_COM) && (defined(WIN64) || defined(_WIN64) || defined(__WIN64__))

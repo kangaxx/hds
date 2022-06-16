@@ -239,6 +239,31 @@ public:
     static bool isFolderExist(string name) {
         return (_access(name.c_str(), 0) == 0);
     }
+
+    static WCHAR* get_file_names(string dir, string file_type, vector<string>& file_names, int& result_count)
+    {
+        result_count = 0;
+        string buffer;
+        if (file_type.find_first_of('.') == 0)
+            buffer = dir + "\\*" + file_type;
+        else
+            buffer = dir + "\\*." + file_type; //设定后缀名的时候忘记写. 了？
+        _finddata_t fileInfo;   //存放文件信息的结构体
+        intptr_t hFile;
+        hFile = _findfirst(buffer.c_str(), &fileInfo); //找第一个文件
+        if (hFile == -1L) {
+            //没找到指定类型的文件
+            return;
+        }
+        else {
+            do {
+                result_count++;
+                file_names.push_back(dir + "\\" + fileInfo.name);
+            } while (_findnext(hFile, &fileInfo) == 0);  //如果找到下个文件的名字成功的话就返回0,否则返回-1  
+            _findclose(hFile);
+        }
+    }
+
     //逐级创建路径
     static void createDirectoryW(wstring wstrDir) // 创建复目录
     {
@@ -253,6 +278,7 @@ public:
         // 修改文件属性
         WIN32_FIND_DATA wfd;
         HANDLE hFind = FindFirstFile(wstrDir.c_str(), &wfd); // 查找
+        
         if (hFind != INVALID_HANDLE_VALUE)
         {
             FindClose(hFind);
