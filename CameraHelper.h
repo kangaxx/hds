@@ -6,10 +6,18 @@
 #include <iostream>
 using namespace std;
 namespace commonfunction_c {
+	typedef enum CAMERA_POSITION {
+		CAMERA_POSITION_LEFT = 1,
+		CAMERA_POSITION_MID = 2,
+		CAMERA_POSITION_RIGHT = 3,
+		CAMERA_POSITION_TOP = 4,
+		CAMERA_POSITION_BOTTOM = 5,
+	}CAMERA_POSITION;
 //工厂模式产品类,任意品牌相机的基类
 class CameraDevicesParent {
 public:
 	CameraDevicesParent() {}
+	CameraDevicesParent(const char* config) {}
 	~CameraDevicesParent() {}
 	virtual bool do_capture(int index, char** result) = 0; //相机拍摄功能，子类负责实现（调用相机sdk）,函数返回值 表示拍摄是否成功
 };

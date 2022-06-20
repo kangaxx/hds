@@ -62,6 +62,18 @@ namespace commonfunction_c {
 			return result;
 		}
 
+		int search_all(string key, std::vector<std::string>& result) {
+			if (!_isInitialed)
+				return 0;
+			std::vector<std::string>* values = findAll(key, _pt);
+			int size = values->size();
+			if (size <= 0)
+				return 0;
+			for (int i = 0; i < size; ++i) 
+				result.push_back((*values)[i]);
+			return size;
+		}
+
 		string search(string tree, string key) {
 			string result;
 			if (!_isInitialed)

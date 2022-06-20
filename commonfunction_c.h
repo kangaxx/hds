@@ -148,7 +148,7 @@ public:
     }
 
     static int Str2Int(string s) {
-        Str2Int(s, 0);
+        return Str2Int(s, 0);
     }
     static int Str2Int(string s, int i) {
         int result = 0;
