@@ -34,5 +34,6 @@ namespace commonfunction_c {
         string _file;
         eConfigType _type;
         bool _initialed;
+        string _whole_text; 
     };
 }

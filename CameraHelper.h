@@ -14,24 +14,23 @@ namespace commonfunction_c {
 		CAMERA_POSITION_BOTTOM = 5,
 	}CAMERA_POSITION;
 //工厂模式产品类,任意品牌相机的基类
-class CameraDevicesParent {
+class CameraDevicesBase {
 public:
-	CameraDevicesParent() {}
-	CameraDevicesParent(const char* config) {}
-	~CameraDevicesParent() {}
-	virtual bool do_capture(int index, char** result) = 0; //相机拍摄功能，子类负责实现（调用相机sdk）,函数返回值 表示拍摄是否成功
+	CameraDevicesBase() {}
+	CameraDevicesBase(const char* config) {}
+	~CameraDevicesBase() {}
+	virtual bool do_capture(int index, HalconCpp::HImage& image) = 0; //相机拍摄功能，子类负责实现（调用相机sdk）,函数返回值 表示拍摄是否成功
 };
 
-class CameraDevicesUnitTest : public CameraDevicesParent {
+class CameraDevicesUnitTest : public CameraDevicesBase {
 public:
 	//单元测试用
 	CameraDevicesUnitTest() {
 		//do nothing
 	}
 	~CameraDevicesUnitTest() {}
-	bool do_capture(int index, char** result) {
+	bool do_capture(int index, HalconCpp::HImage& image) {
 		try {
-			strcpy_s(*result, 4, "cam");
 			return true;
 		}
 		catch (...) {
@@ -39,7 +38,19 @@ public:
 		}
 	}
 };
+
+//图像处理功能基类
+class ImageProcessingBase {
+public:
+	ImageProcessingBase() {}
+	~ImageProcessingBase() {}
+	virtual void set_cameras(CameraDevicesBase* camera) = 0;
+	virtual void do_image_process(HalconCpp::HImage &result) = 0;
+private:
+	
+};
 //工厂类
+
 class CameraHelper {
 public:
 	static CameraHelper& get_instance() { 
@@ -47,12 +58,12 @@ public:
 		return instance; 
 	}
 
-	void initial(CameraDevicesParent* camera) {
+	void initial(CameraDevicesBase* camera) {
 		_camera = camera;
 	}
-	void do_capture(int index, char** result) {
+	void do_capture(int index, HalconCpp::HImage image) {
 		if (_camera != nullptr)
-			_camera->do_capture(index, result);
+			_camera->do_capture(index, image);
 	}
 private:
 	CameraHelper() {
@@ -62,7 +73,7 @@ private:
 	CameraHelper(const CameraHelper&);
 	CameraHelper& operator=(CameraHelper&);
 	int _camera_num = 0;
-	CameraDevicesParent* _camera = nullptr;
+	CameraDevicesBase* _camera = nullptr;
 };
 
 }

@@ -88,6 +88,20 @@ namespace commonfunction_c {
 			delete values;
 			return result;
 		}
+
+		template<class T>
+		int read_array(std::string key, std::vector<T>& out) {
+			int result = 0;
+			boost::property_tree::ptree position_array = _pt.get_child(key);
+			boost::property_tree::ptree::iterator pos = position_array.begin();
+			for (; pos != position_array.end(); ++pos)
+			{
+				T value = pos->second.get_value<T>();
+				out.push_back(value);
+				++result;
+			}
+			return result;
+		}
 	private:
 		wstring _json_w_string;
 		string _json_string;
@@ -121,6 +135,8 @@ namespace commonfunction_c {
 
 			return result;
 		}
+
+
 
 		std::string findFirst(std::string key, ptree const& pt) {
 			std::vector<std::string> values;
