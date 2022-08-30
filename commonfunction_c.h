@@ -169,9 +169,21 @@ public:
         return string(out);
     }
 
+    static string d2str(double in, const char* precision = "%.8lf") {
+        char out[128];
+        sprintf_s(out, 128, precision, in);
+        return string(out);
+    }
+
     static float str2f(string in) {
         float out;
         sscanf_s(in.c_str(), "%f", &out);
+        return out;
+    }
+
+    static double str2d(string in) {
+        double out;
+        sscanf_s(in.c_str(), "%lf", &out);
         return out;
     }
 
@@ -403,7 +415,7 @@ public:
         localtime_s(&p, &time);
         p.tm_year = p.tm_year + 1900;
         p.tm_mon = p.tm_mon + 1;
-        snprintf(chTmp, sizeof(chTmp), "%04d-%02d-%02d-%02d-%02d-%04d",
+        snprintf(chTmp, sizeof(chTmp), "%04d-%02d-%02d %02d:%02d:%04d",
             p.tm_year, p.tm_mon, p.tm_mday, p.tm_hour, p.tm_min, p.tm_sec);
         return chTmp;
     }

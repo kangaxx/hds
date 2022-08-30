@@ -64,7 +64,147 @@ namespace halconUtils {
     };
 
     class HalconUtils {
-    public:
+    public: 
+        enum Rectangle_Angle_Pos
+        {
+            UPPER_LINE = 0, //取出组成上方的线（的角点）
+            LEFT_LINE = 1, //取出组成左侧的线（的角点）
+            RIGHT_LINE = 2, //取出组成右侧的线（的角点）
+            LOWER_LINE = 3 //取出组成下方的线（的角点）
+        };
+        /// <summary>
+        /// 根据参数取出仿射矩形的边，正常情况下，上下左右只有一条边，但是特定情况下（45度正方形）会有两条
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="phi"></param>
+        /// <param name="l1"></param>
+        /// <param name="l2"></param>
+        /// <param name="points"></param>
+        /// <returns>变得数量， 当数量为2 时需要注意</returns>
+        static int get_rectangle_angle_point(Rectangle_Angle_Pos pos, HTuple row, HTuple column, HTuple phi, HTuple l1, HTuple l2, vector<HTuple>& points_row, vector<HTuple>& points_col) {
+            HTuple sin, cos;
+            HTuple a, b, c, d, e, f, g, h;
+            TupleSin(phi, &sin);
+            TupleCos(phi, &cos);
+            a = -1.0 * l1 * cos - l2 * sin;
+            b = -1.0 * l1 * sin + l2 * cos;
+            c = l1 * cos - l2 * sin;
+            d = l1 * sin + l2 * cos;
+            e = -l1 * cos + l2 * sin;
+            f = -l1 * sin - l2 * cos;
+            g = l1 * cos + l2 * sin;
+            h = l1 * sin - l2 * cos;
+            HTuple row1, row2, row3, row4, col1, col2, col3, col4;
+            row1 = row - b;
+            col1 = column + a;
+            row2 = row - d;
+            col2 = column + c;
+            row3 = row - f;
+            col3 = column + e;
+            row4 = row - h;
+            col4 = column + g; 
+            int result_num = 0;
+            if (Rectangle_Angle_Pos::UPPER_LINE == pos) {
+                if (row1 <= row) {
+                    points_row.push_back(row1);
+                    points_col.push_back(col1);
+                    result_num++;
+                }
+                if (row2 <= row) {
+                    points_row.push_back(row2);
+                    points_col.push_back(col2);
+                    result_num++;
+                }
+                if (row3 <= row) {
+                    points_row.push_back(row3);
+                    points_col.push_back(col3);
+                    result_num++;
+                }
+                if (row4 <= row) {
+                    points_row.push_back(row4);
+                    points_col.push_back(col4);
+                    result_num++;
+                }
+            }
+            else if (Rectangle_Angle_Pos::LEFT_LINE == pos) {
+                if (col1 <= column) {
+                    points_row.push_back(row1);
+                    points_col.push_back(col1);
+                    result_num++;
+                }
+                if (col2 <= column) {
+                    points_row.push_back(row2);
+                    points_col.push_back(col2);
+                    result_num++;
+                }
+                if (col3 <= column) {
+                    points_row.push_back(row3);
+                    points_col.push_back(col3);
+                    result_num++;
+                }
+                if (col4 <= column) {
+                    points_row.push_back(row4);
+                    points_col.push_back(col4);
+                    result_num++;
+                }
+            }
+            else if (Rectangle_Angle_Pos::RIGHT_LINE == pos) {
+                if (col1 >= column) {
+                    points_row.push_back(row1);
+                    points_col.push_back(col1);
+                    result_num++;
+                }
+                if (col2 >= column) {
+                    points_row.push_back(row2);
+                    points_col.push_back(col2);
+                    result_num++;
+                }
+                if (col3 >= column) {
+                    points_row.push_back(row3);
+                    points_col.push_back(col3);
+                    result_num++;
+                }
+                if (col4 >= column) {
+                    points_row.push_back(row4);
+                    points_col.push_back(col4);
+                    result_num++;
+                }
+            }
+            else if (Rectangle_Angle_Pos::LOWER_LINE == pos) {
+                if (row1 >= row) {
+                    points_row.push_back(row1);
+                    points_col.push_back(col1);
+                    result_num++;
+                }
+                if (row2 >= row) {
+                    points_row.push_back(row2);
+                    points_col.push_back(col2);
+                    result_num++;
+                }
+                if (row3 >= row) {
+                    points_row.push_back(row3);
+                    points_col.push_back(col3);
+                    result_num++;
+                }
+                if (row4 >= row) {
+                    points_row.push_back(row4);
+                    points_col.push_back(col4);
+                    result_num++;
+                }
+            }
+            if (result_num != 2)
+                return true;
+            else
+                return false;
+        }
+        static HObject char_to_halcon_image(char* data, int width, int height) {
+            HObject  ho_Image;
+            GenImage1Extern(&ho_Image, "byte", width, height, (Hlong)data, NULL); //由相机传入
+            return ho_Image;
+        }
+
         static unsigned char* HImage2BitMap(HImage& source, unsigned char** result) {
             unsigned char* image = *result;
             Hlong width;

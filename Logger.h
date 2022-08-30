@@ -52,6 +52,10 @@ namespace commonfunction_c {
 			}
 		}
 
+		void Log(std::wstring l) {
+			Log(BaseFunctions::ws2s(l));
+		}
+
 		void SimpleLog(std::string fileName, std::string l) {
 			try {
 				//整理日志内容
@@ -71,6 +75,36 @@ namespace commonfunction_c {
 				// do nothing
 			}
 		}
+
+		//可以持续追加的log方式 ,my_log.linkable_log("this").linkable_log(" is").Log(" Sparta!");
+		Logger linkable_log(std::string l) {
+			try {
+				//整理日志内容
+				std::string log;
+				if (m_format.empty()) {
+					//如果没有设置格式，默认就是 [年月日 时分秒] : 拼接 log 
+					getDateTime(log);
+					log = "[" + log + " ] LEVEL [Log] : " + l;
+				}
+				//输出到form
+				// to do 
+				//输出到console
+				if (log_level_ & LOG_LEVEL_STD_OUT)
+					std::cout << log;
+				//输出到文件
+				if (log_level_ & LOG_LEVEL_STD_WRITE_FILE)
+					write2File(log);
+				return *this;
+			}
+			catch (...) {
+				// do nothing
+			}
+		}
+
+		Logger linkable_log(std::wstring l) {
+			return linkable_log(BaseFunctions::ws2s(l));
+		}
+
 		//清空log文件
 		void clear_log_file() {
 
@@ -85,7 +119,7 @@ namespace commonfunction_c {
 			localtime_s(&p, &t);
 			p.tm_year = p.tm_year + 1900;
 			p.tm_mon = p.tm_mon + 1;
-			snprintf(chTmp, sizeof(chTmp), "%04d-%02d-%02d %2d:%02d:%04d",
+			snprintf(chTmp, sizeof(chTmp), "%04d-%02d-%02d %2d:%02d:%02d",
 				p.tm_year, p.tm_mon, p.tm_mday, p.tm_hour, p.tm_min, p.tm_sec);
 			strDate = chTmp;
 			return;

@@ -1,4 +1,5 @@
 //create by gxx
+#pragma once
 #include <limits.h>
 #define INT_GOOD_NUM_MAX  20
 #define INT_FAIL_NUM_MAX  40
@@ -274,9 +275,10 @@
 #define ROLLING_RESULT_OK true
 #define REDIS_WRITE_KEY "to_zj"
 #define REDIS_READ_KEY "to_gxx"
+#define REDIS_COMMAND_NUMBER "CMD_NUM"
 #define REDIS_WORK_STATUS_KEY "WorkStatus"
 #define REDIS_WORK_STATUS_START "Start"
-#define REDIS_WORK_STATUS_STOP "Stop"
+#define REDIS_WORK_STATUS_STOP "-1"
 #define REDIS_IS_WORK
 #define REDIS_LIST_CALIBRATION_KEY "Calibration"
 #define JSON_CALIBRATION_TOP_KEY "CalibrationTop"
@@ -310,9 +312,29 @@
 #define STANDARD_CAMERA_MODE_CHAR "0" //标准拍摄模式字符串
 #define MSA_NO_TRIGGER_CAMERA_MODE 1 //msa 连续拍摄模式
 #define EAR_EDGE_AREA_WIDTH 15 //极耳边缘检测宽度
+#define LOAD_CALI_CONFIG_STRING_LENGTH 30
+#define CALIB_MODE_STATIC_VALUE 0 //使用固定标定系数
+#define CALIB_MODE_FROM_FILE 1 //读取标定系数文件（数据来源halcon标定助手）
+#define XINYU_IMAGE_MEASURE_RESULT_SUCCESS 0//
+#define XINYU_IMAGE_MEASURE_RESULT_FAIL 1//
 #if defined(__linux__) || defined(__linux)
 #  define __IS_LINUX__
 #elif !defined(SAG_COM) && (defined(WIN64) || defined(_WIN64) || defined(__WIN64__))
 #  define __IS_WINDOW__
 #  define __IS_WIN__
 #endif
+
+enum CameraPosition {
+	CP_LEFT = 1,
+	CP_LEFT_TOP = 2,
+	CP_LEFT_MID = 3,
+	CP_LEFT_BOTTOM = 4,
+	CP_MID = 5,
+	CP_MID_TOP = 6,
+	CP_MID_MID= 7,
+	CP_MID_BOTTOM = 8,
+	CP_RIGHT = 9,
+	CP_RIGHT_TOP = 10,
+	CP_RIGHT_MID = 11,
+	CP_RIGHT_BOTTOM = 12
+};

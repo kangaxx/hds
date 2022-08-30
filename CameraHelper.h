@@ -19,7 +19,9 @@ public:
 	CameraDevicesBase() {}
 	CameraDevicesBase(const char* config) {}
 	~CameraDevicesBase() {}
+	virtual int get_devices_num() = 0; 
 	virtual bool do_capture(int index, HalconCpp::HImage& image) = 0; //相机拍摄功能，子类负责实现（调用相机sdk）,函数返回值 表示拍摄是否成功
+	virtual string get_camera_tag(int index) = 0; //获取相机
 };
 
 class CameraDevicesUnitTest : public CameraDevicesBase {
@@ -36,6 +38,10 @@ public:
 		catch (...) {
 			return false;
 		}
+	}
+
+	string get_camera_tag(int index) {
+		return "";
 	}
 };
 
