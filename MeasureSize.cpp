@@ -4,7 +4,7 @@
 
 #define PI 3.1415926535897932384626433832795
 
-MeasureSize::MeasureSize() : _c0BodyGray(75), _c0EarGray(250), _c0EdgeThreshold(15), _c2BodyGray(50)
+MeasureSize::MeasureSize() : _c0BodyGray(90), _c0EarGray(250), _c0EdgeThreshold(15), _c2BodyGray(50)
 {
 	Reset();
 
@@ -74,7 +74,7 @@ int MeasureSize::CalcCamera0(HImage& image, F0SIZE_PIXEL& c0Pos)
 		//HImage image2 = image.AddImage(image, 1.1, 0);
 
 		HRegion roi;
-		Hlong roiR1 = 0, roiC1 = 78, roiR2 = 2744, roiC2 = 1560;
+		Hlong roiR1 = 0, roiC1 = 78, roiR2 = 2744, roiC2 = 1480;
 		roi.GenRectangle1(roiR1, roiC1, roiR2, roiC2);
 
 		HImage roiImage = image1.ReduceDomain(roi);
@@ -86,7 +86,7 @@ int MeasureSize::CalcCamera0(HImage& image, F0SIZE_PIXEL& c0Pos)
 		HRegion reg = roiImage.Threshold(0, _c0BodyGray);
 		reg = reg.FillUp();
 		HRegion bodyReg = reg;
-		reg = reg.OpeningRectangle1(50, 600); // 去除毛刺点和极耳区域
+		reg = reg.OpeningRectangle1(300, 600); // 去除毛刺点和极耳区域
 		reg = reg.Connection();
 		reg = reg.SelectShapeStd("max_area", 70);
 		if (reg.Area() < 200000) // 没有找到极片区域，返回错误
@@ -111,7 +111,7 @@ int MeasureSize::CalcCamera0(HImage& image, F0SIZE_PIXEL& c0Pos)
 		HTuple rowEdge, colEdge, amp, dist;
 		HMeasure measure;
 		measure.GenMeasureRectangle2(r1, c1 + 170, PI * 0.5, 20, 50, imgW, imgH, "bilinear");
-		roiImage.MeasurePos(measure, 1.0, _c0EdgeThreshold, "positive", "first", &rowEdge, &colEdge, &amp, &dist);
+		roiImage.MeasurePos(measure, 1.0, 10, "positive", "first", &rowEdge, &colEdge, &amp, &dist);
 		if (rowEdge.Length() > 0)
 			c0Pos._c0Row0 = rowEdge.D();
 		else

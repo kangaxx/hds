@@ -44,7 +44,9 @@ class MeasureSize
 {
 public:
 	MeasureSize();
-
+	MeasureSize(int c0_body_gray, int c0_ear_gray, int c2_edge_threshold, int c2_body_gray) : _c0BodyGray(c0_body_gray), _c0EarGray(c0_ear_gray), _c0EdgeThreshold(c2_edge_threshold), _c2BodyGray(c2_body_gray) {
+		Reset();
+	}
 	// 重置测量状态，图像计数清零
 	void Reset();
 

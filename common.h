@@ -344,7 +344,6 @@ enum CameraPosition {
 static int g_log_msec_type = 0;
 static int g_msec = GetTickCount() % MSEC_LENGTH;
 inline void update_current_msec(int type) {
-	g_msec = GetTickCount() % MSEC_LENGTH;
 	g_log_msec_type = type;
 }
 inline int abs_used_time(int used_time) {
