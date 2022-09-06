@@ -12,14 +12,25 @@
 #include"common.h"
 #include "commonfunction_c.h"
 namespace commonfunction_c {
-	class Logger {
+	class LoggerBase {
+	public:
+		virtual void append_log(char*) = 0;
+		virtual void set_level(int level) = 0;
+		virtual void Log(std::string l) = 0;
+	};
+
+	class Logger : public LoggerBase {
 	public:
  		Logger() : m_out(DEFAULT_LOG_PATH_WIN) {
-
+			log_level_ = LOG_LEVEL_STD_OUT | LOG_LEVEL_STD_WRITE_FILE;
 		}
 		//路径设置m_out （文件系统路径或者其他输出设备路径等）
 		Logger(std::string o) : m_out(o){
 			log_level_ = LOG_LEVEL_STD_OUT | LOG_LEVEL_STD_WRITE_FILE;
+		}
+
+		void append_log(char* log) {
+			Log(log);
 		}
 
 		void set_level(int level) {
@@ -29,6 +40,9 @@ namespace commonfunction_c {
 		void Initial(std::string f) {
 			//设置格式
 			m_format = f;
+		}
+		void Log(int v) {
+			Log(BaseFunctions::Int2Str(v));
 		}
 		void Log(std::string l) {
 			try {
@@ -109,6 +123,7 @@ namespace commonfunction_c {
 		void clear_log_file() {
 
 		}
+
 	private:
 		int log_level_; //1;默认输出 2:写入日志文件 4: 写入数据库
 		void getDateTime(string& strDate) {
@@ -171,4 +186,79 @@ namespace commonfunction_c {
 		std::string m_out;
 		std::string m_format = "";
 	};
+
+	/*
+	//线程安全日志运行类
+	class Logger;
+	unsigned long thread_safe_log_start_thread(void* lpParameter);
+	void* g_singleton_thread_safe_logger = NULL;
+	std::mutex g_singleton_mutex;
+
+	class thread_safe_logger {
+	public:
+		static thread_safe_logger* get_instance(char* path) {
+			if (NULL == g_singleton_thread_safe_logger) {
+				g_singleton_mutex.lock();
+				if (NULL == g_singleton_thread_safe_logger) {
+					thread_safe_logger* temp_instance = new thread_safe_logger(path);
+					temp_instance->initial(NULL);
+					g_singleton_thread_safe_logger = temp_instance;
+				}
+				g_singleton_mutex.unlock();
+			}
+			return (thread_safe_logger*)g_singleton_thread_safe_logger;
+		}
+
+		bool initial(char* v) {
+			CreateThread(0, 0, (LPTHREAD_START_ROUTINE)&thread_safe_log_start_thread, NULL, 0, 0);
+			return true;
+		}
+
+		void log(char* log) {
+			g_singleton_mutex.lock();
+			_logs.push_back(log);
+			g_singleton_mutex.unlock();
+		}
+
+		bool write_log(int idx) {
+			if (idx < _logs.size()) {
+				_logger->Log(_logs.at(idx));
+				return true;
+			}
+			else
+				return false;
+			
+		}
+		bool is_new_log(int idx) {
+			return idx < _logs.size();
+		}
+
+	private:
+		vector<char*> _logs;
+		Logger* _logger;
+		thread_safe_logger() {
+			//nothing
+			throw "Do not use this function";
+		}
+		thread_safe_logger(char* path) {
+			strncpy_s(_path, path, THREAD_SAFE_LOGGER_PATH_CHAR_LENGTH);
+			_logger = new Logger(_path);;
+		}
+		char _path[THREAD_SAFE_LOGGER_PATH_CHAR_LENGTH] = { 0 };
+	};
+
+	unsigned long thread_safe_log_start_thread(void* lpParameter) {
+		int idx = 0;
+		while (true) {
+			bool is_new_log;
+			g_singleton_mutex.lock();
+			is_new_log = ((thread_safe_logger*)g_singleton_thread_safe_logger)->is_new_log(idx);
+			g_singleton_mutex.unlock();
+			if (is_new_log && ((thread_safe_logger*)g_singleton_thread_safe_logger)->write_log(idx))
+				idx++;
+			else
+				Sleep(5);
+		}
+	}
+	*/
 }

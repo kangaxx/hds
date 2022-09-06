@@ -317,6 +317,8 @@
 #define CALIB_MODE_FROM_FILE 1 //读取标定系数文件（数据来源halcon标定助手）
 #define XINYU_IMAGE_MEASURE_RESULT_SUCCESS 0//
 #define XINYU_IMAGE_MEASURE_RESULT_FAIL 1//
+#define XINYU_VIRTUAL_VALUES "{\"adjust_values\":[\"62.5\",\"113.2\",\"31.4\",\"13.9\",\"12.8\",\"6.1\",\"3.1\",\"3.0\",\"2.8\",\"2.9\"]}"
+#define THREAD_SAFE_LOGGER_PATH_CHAR_LENGTH 200
 #if defined(__linux__) || defined(__linux)
 #  define __IS_LINUX__
 #elif !defined(SAG_COM) && (defined(WIN64) || defined(_WIN64) || defined(__WIN64__))
@@ -338,3 +340,19 @@ enum CameraPosition {
 	CP_RIGHT_MID = 11,
 	CP_RIGHT_BOTTOM = 12
 };
+#define MSEC_LENGTH 100000
+static int g_log_msec_type = 0;
+static int g_msec = GetTickCount() % MSEC_LENGTH;
+inline void update_current_msec(int type) {
+	g_msec = GetTickCount() % MSEC_LENGTH;
+	g_log_msec_type = type;
+}
+inline int abs_used_time(int used_time) {
+	if (used_time < 0) return MSEC_LENGTH + used_time;
+	else return used_time;
+}
+#define MAX_VIRTUAL_CAMERA_COUNT 12
+#define CONCURRENT_LOGGER_DATA_CACHE_SIZE 50000 //多线程日志类cache size
+#define CONCURRENT_LOGGER_COUNT_MAX 200//日志内最多存储条数
+const double cathode_std_size[12] = { 62.534, 113.221, 31.436, 12.807, 13.884, 6.092, 3, 3, 3, 3, 3, 3 };
+const double anode_std_size[12] = { 64.476, 115.667, 25.057, 6.101,13.71,  7.172, 3, 3, 3, 3, 3, 3 };

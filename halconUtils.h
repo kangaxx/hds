@@ -302,4 +302,27 @@ namespace halconUtils {
         int type;
     };
 
+    //图片的额外信息
+    class HImageExtraInfo {
+    public:
+        HImageExtraInfo(HImage& other) {
+            _image = other;
+        }
+        void set_job_id(int id) {
+            _job_id = id;
+        }
+        int get_job_id() { return _job_id; }
+        void set_camera_id(int id) { _camera_id = id; }
+        int get_camera_id() { return _camera_id; }
+        HImage& get_image() { return _image; }
+        void set_total_count(int v) { _total_camera_count = v; }
+        int get_total_count() { return _total_camera_count; }
+    private:
+        HImage _image;
+        HImage* _temp_image; //特定情况下只有指针
+        int _job_id;
+        int _camera_id;
+        int _total_camera_count;
+        string _camera_tag;
+    };
 }

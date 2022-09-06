@@ -615,7 +615,7 @@ private:
         Node *next;
         Node(T &element,Node *prior, Node *next):data(element){this->next = next;this->prior = prior; prior->next=next->prior = this;}
         Node():data(data){}
-        ~Node(){prior->next = next; next->prior = prior;}
+        ~Node() { if (prior != NULL) prior->next = next; if (next != NULL) next->prior = prior; }
     };
     Node *head;
     Node *current;
@@ -799,7 +799,7 @@ private:
         Node *next;
         Node(const T *element,Node *prior, Node *next):data(element){this->next = next;this->prior = prior; prior->next=next->prior = this;}
         Node():data(NULL){}
-        ~Node(){prior->next = next; next->prior = prior;}
+        ~Node() { prior->next = next; next->prior = prior; delete data; }
     };
     Node *head;
     Node *current;

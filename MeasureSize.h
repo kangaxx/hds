@@ -1,0 +1,110 @@
+#pragma once
+
+#include "HalconCpp.h"
+using namespace HalconCpp;
+
+// 面阵相机尺寸结构，mm
+typedef struct __FSIZE
+{
+	double		W;
+	double		L;
+	double		W1;
+	double		W2;
+	double		H;
+	double		H1;
+	double		Ra[2];
+	double		Rb[4];
+} FSIZE;
+
+
+// 面阵相机0尺寸像素位置
+typedef struct __F0SIZE_PIXEL
+{
+	// 相机0的各边位置（像素）
+	double		_c0Row0;	// W方向
+	double		_c0Row1;	// W方向
+	double		_c0Row2;	// W1方向
+	double		_c0Row3;	// W1方向
+	double		_c0Col0;	// 极耳左边
+	double		_c0Col1;	// 极耳（金属）右边
+	double		_c0Col2;	// 极片肩部
+	double		_c0Col3;	// L方向
+} F0SIZE_PIXEL;
+
+// 面阵相机2尺寸像素位置
+typedef struct __F2SIZE_PIXEL
+{
+	// 相机2的各边位置（像素）
+	double		_c2Row0;	// L方向
+	double		_c2Col0;	// W方向
+	double		_c2Col1;	// W方向
+} F2SIZE_PIXEL;
+
+class MeasureSize
+{
+public:
+	MeasureSize();
+
+	// 重置测量状态，图像计数清零
+	void Reset();
+
+	// 设置标准尺寸，将采用最后一片的像素结果与尺寸结果关联
+	// 返回0：成功，其他：失败
+	int SetStdSize(const FSIZE& size);
+
+	void SetStdPos(const F0SIZE_PIXEL& c0Pos, const F2SIZE_PIXEL& c2Pos);
+
+	// 设置相机0,2的尺寸像素比例
+	void SetRate(const double& c0Rate, const double& c2Rate)
+	{
+		_c0RateX = _c0RateY = c0Rate;
+		_c2RateX = _c2RateY = c2Rate;
+	}
+
+	// 计算相机0的各条边像素位置
+	// 返回0：成功，其他：失败
+	int CalcCamera0(HImage& image, F0SIZE_PIXEL& c0Pos);
+
+	// 计算相机2的各条边像素位置
+	// 返回0：成功，其他：失败
+	int CalcCamera2(HImage& image, F2SIZE_PIXEL& c2Pos);
+
+	// 根据相机0，2的各条边像素位置，基于标准图像，计算当前图的各项尺寸
+	// 返回0：成功，其他：失败
+	int CalcSize(const F0SIZE_PIXEL& c0Pos, const F2SIZE_PIXEL& c2Pos, FSIZE& size);
+	
+private:
+	int				_c0Count;	// 相机0图像计数
+
+	int				_c2Count;	// 相机2图像计数
+
+	// 标准尺寸
+	FSIZE			_stdSize;
+
+	// 相机0的各边位置（像素），对应标准尺寸测量的极片图像
+	F0SIZE_PIXEL	_c0StdPos;
+	F0SIZE_PIXEL	_c0LastPos;	// 当前结果
+
+	// 相机2的各边位置（像素），对应标准尺寸测量的极片图像
+	F2SIZE_PIXEL	_c2StdPos;
+	F2SIZE_PIXEL	_c2LastPos;	// 当前结果
+
+	// 相机0,2的尺寸像素比例
+	double			_c0RateX, _c0RateY;
+	double			_c2RateX, _c2RateY;
+
+	// 相机0，极片区域二值化灰度
+	double			_c0BodyGray;
+
+	// 相机0，极耳区域二值化灰度
+	double			_c0EarGray;
+
+	// 寻边阈值
+	double			_c0EdgeThreshold;
+
+	// 相机2，极片区域二值化灰度
+	double			_c2BodyGray;
+
+	// 相机2，亮度补偿图
+	HImage			_addImage;	
+};
