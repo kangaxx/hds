@@ -44,7 +44,12 @@ class MeasureSize
 {
 public:
 	MeasureSize();
-	MeasureSize(int c0_body_gray, int c0_ear_gray, int c2_edge_threshold, int c2_body_gray) : _c0BodyGray(c0_body_gray), _c0EarGray(c0_ear_gray), _c0EdgeThreshold(c2_edge_threshold), _c2BodyGray(c2_body_gray) {
+	MeasureSize(int c0_body_gray, int c0_ear_gray, double c0_edge_threshold, double c1_edge_threshold,
+		int c2_body_gray, int r1, int r2, int c1, int c2, int r21, int r22, int c21,
+		int c22, double image_add) : _c0BodyGray(c0_body_gray),
+		_c0EarGray(c0_ear_gray), _c0EdgeThreshold(c0_edge_threshold), _c1EdgeThreshold(c1_edge_threshold),
+		_c2BodyGray(c2_body_gray), _roi_c1(c1), _roi_c2(c2), _roi_r1(r1), _roi_r2(r2),
+		_roi2_c1(c21), _roi2_c2(c22), _roi2_r1(r21), _roi2_r2(r22), _image_add(image_add){
 		Reset();
 	}
 	// 重置测量状态，图像计数清零
@@ -80,6 +85,10 @@ private:
 
 	int				_c2Count;	// 相机2图像计数
 
+	int _roi_r1, _roi_r2, _roi_c1, _roi_c2;
+	int _roi2_r1, _roi2_r2, _roi2_c1, _roi2_c2;
+	double _image_add;
+
 	// 标准尺寸
 	FSIZE			_stdSize;
 
@@ -102,7 +111,7 @@ private:
 	double			_c0EarGray;
 
 	// 寻边阈值
-	double			_c0EdgeThreshold;
+	double			_c0EdgeThreshold, _c1EdgeThreshold;
 
 	// 相机2，极片区域二值化灰度
 	double			_c2BodyGray;

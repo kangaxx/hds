@@ -350,8 +350,10 @@ inline int abs_used_time(int used_time) {
 	if (used_time < 0) return MSEC_LENGTH + used_time;
 	else return used_time;
 }
-#define MAX_VIRTUAL_CAMERA_COUNT 12
+#define MAX_VIRTUAL_CAMERA_COUNT 8
 #define CONCURRENT_LOGGER_DATA_CACHE_SIZE 50000 //多线程日志类cache size
 #define CONCURRENT_LOGGER_COUNT_MAX 200//日志内最多存储条数
+//	stdSize.W = fmt_value[0];
+//                                      W         L      H       H1      W1      W2 
 const double cathode_std_size[12] = { 62.534, 113.221, 31.436, 12.807, 13.884, 6.092, 3, 3, 3, 3, 3, 3 };
-const double anode_std_size[12] = { 64.476, 115.667, 25.057, 6.101,13.71,  7.172, 3, 3, 3, 3, 3, 3 };
+const double anode_std_size[12] = { 64.648, 115.3, 25.125, 6.192, 13.852, 7.242, 3, 3, 3, 3, 3, 3 };
