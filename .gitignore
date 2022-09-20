@@ -8,3 +8,8 @@ MeasureSize_anode.cpp
 MeasureSize_cathode_old.cpp
 MeasureSize.cpp.anode
 MeasureSize.cpp.cathode
+MeasureSize.cpp.gxx
+MeasureSize.cpp.gxc
+MeasureSize.cpp.no4
+MeasureSize.cpp.zf.no4
+MeasureSize.h.zf.no4
