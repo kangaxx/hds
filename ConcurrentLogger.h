@@ -9,98 +9,57 @@
 *****************************************************************************************/
 #pragma once
 #include <iostream>
+#include <redis++.h>
+#include <cstdio>
+#include <unordered_set>
+#include <stdio.h>
+#include <iostream>
+#include <Windows.h>
+#include <UserEnv.h>
 
 #include "commonfunction_c.h"
 #include "common.h"
 #include "Logger.h"
-
+#include "../../../hds/halconUtils.h"
 namespace commonfunction_c {
-	unsigned long thread_safe_log_start_thread(void* lpParameter);
-	void* g_singleton_thread_safe_logger = NULL;
-	std::mutex g_singleton_mutex;
-
 	class ConcurrentLogger :public LoggerBase {
 	public:
-		void append_log(char* log) {
-		}
+		void append_log(const char* log);
 		void set_level(int level) {
 		}
-		void Log(std::string l) {
-		}
-		static ConcurrentLogger* get_instance(char* path) {
-			if (NULL == g_singleton_thread_safe_logger) {
-				g_singleton_mutex.lock();
-				if (NULL == g_singleton_thread_safe_logger) {
-					ConcurrentLogger* temp_instance = new ConcurrentLogger(path);
-					temp_instance->initial(NULL);
-					g_singleton_thread_safe_logger = temp_instance;
-				}
-				g_singleton_mutex.unlock();
-			}
-			return (ConcurrentLogger*)g_singleton_thread_safe_logger;
-		}
-
-		bool initial(char* v) {
-			CreateThread(0, 0, (LPTHREAD_START_ROUTINE)&thread_safe_log_start_thread, NULL, 0, 0);
-			return true;
-		}
-
-		void log(char* log) {
-			g_singleton_mutex.lock();
-			g_singleton_mutex.unlock();
-		}
-
-		bool write_log(int idx) {
-			if (idx < get_log_count()) {
-				//_logger->Log(_logs.at(idx));
-				return true;
-			}
-			else
-				return false;
-
-		}
-		bool is_new_log(int idx) {
-			return idx < get_log_count();
-		}
-
+		void Log(std::string l);
+		static ConcurrentLogger* get_instance(const char* path);
+		void loop_cache_thread();
 	private:	
+		std::mutex _read_write_cache_mutex;
+		size_t _log_length = 200;
 		class LogUnit {
 		public:
-			LogUnit(char* p) {
-				_p = p;
+			LogUnit(size_t text_length, const char* log) {
+				_length = text_length;
+				_log = new char[_length];
+				strncpy_s(_log, _length, log, _length - 1);
 			}
+			~LogUnit() {
+				delete[] _log;
+			}
+			const char* get_log() const;
+			void copy_log(char* destination) const;
 		private:
-			char* _p;
+			size_t _length;
+			char* _log;
 		};
+		commonfunction_c::DuLink<LogUnit*> _log_list;
 		char _path[THREAD_SAFE_LOGGER_PATH_CHAR_LENGTH] = { 0 };
-		int _log_count = 0;
-		const int LOG_LENGTH = CONCURRENT_LOGGER_DATA_CACHE_SIZE / CONCURRENT_LOGGER_COUNT_MAX;
-		char _logs[CONCURRENT_LOGGER_DATA_CACHE_SIZE];
 		Logger* _logger;
 		ConcurrentLogger() {
 			//nothing
 			throw "Do not use this function";
 		}
-		ConcurrentLogger(char* path) {
+		ConcurrentLogger(const char* path) {
 			strncpy_s(_path, path, THREAD_SAFE_LOGGER_PATH_CHAR_LENGTH);
 			_logger = new Logger(_path);;
 		}
-
-		int get_log_count() { return _log_count; }
-		void inc_log_count() { _log_count++; }
+		bool initial(const char* v);
 	};
-
-	unsigned long thread_safe_log_start_thread(void* lpParameter) {
-		int idx = 0;
-		while (true) {
-			bool is_new_log;
-			g_singleton_mutex.lock();
-			is_new_log = ((ConcurrentLogger*)g_singleton_thread_safe_logger)->is_new_log(idx);
-			g_singleton_mutex.unlock();
-			if (is_new_log && ((ConcurrentLogger*)g_singleton_thread_safe_logger)->write_log(idx))
-				idx++;
-			else
-				Sleep(5);
-		}
-	}
 }

@@ -8,8 +8,7 @@ MeasureSize::MeasureSize() : _c0BodyGray(75), _c0EarGray(250), _c0EdgeThreshold(
 {
 	Reset();
 
-	// 创建相机2亮度补偿图
-	_addImage.GenImageGrayRamp(0, 0.1, 0, 0, 2700, 3128, 1136);
+
 }
 
 void MeasureSize::Reset()
@@ -24,6 +23,8 @@ void MeasureSize::Reset()
 
 	memset(&_c0LastPos, 0, sizeof(_c0LastPos));
 	memset(&_c2LastPos, 0, sizeof(_c2LastPos));
+	// 创建相机2亮度补偿图
+	_addImage.GenImageGrayRamp(0, _gray_ramp_beta, 0, 0, _gray_ramp_c0, 3128, 1136);
 }
 
 int MeasureSize::SetStdSize(const FSIZE& size)
@@ -71,12 +72,12 @@ int MeasureSize::CalcCamera0(HImage& image, F0SIZE_PIXEL& c0Pos)
 		Hlong imgW, imgH;
 		image.GetImageSize(&imgW, &imgH);
 
-		HImage image1 = image.AddImage(image, 1, 0);
+		HImage image1 = image.AddImage(image, _image_add, 0);
 		//HImage image1 = image;
 		//HImage image2 = image.AddImage(image, 1.1, 0);
 
 		HRegion roi;
-		Hlong roiR1 = 0, roiC1 = 78, roiR2 = 2744, roiC2 = 1628;
+		Hlong roiR1 = _roi_r1, roiC1 = _roi_c1, roiR2 = _roi_r2, roiC2 = _roi_c2;
 		roi.GenRectangle1(roiR1, roiC1, roiR2, roiC2);
 
 		HImage roiImage = image1.ReduceDomain(roi);
@@ -113,7 +114,7 @@ int MeasureSize::CalcCamera0(HImage& image, F0SIZE_PIXEL& c0Pos)
 		// 测量row0
 		HTuple rowEdge, colEdge, amp, dist;
 		HMeasure measure;
-		measure.GenMeasureRectangle2(r1, c1 + 170, PI * 0.5, 20, 50, imgW, imgH, "bilinear");
+		measure.GenMeasureRectangle2(r1, c1 + 170, PI * 0.5, 30, 50, imgW, imgH, "bilinear");
 		roiImage.MeasurePos(measure, 1.0, 10, "positive", "first", &rowEdge, &colEdge, &amp, &dist);
 		if (rowEdge.Length() > 0)
 			c0Pos._c0Row0 = rowEdge.D();
@@ -124,7 +125,7 @@ int MeasureSize::CalcCamera0(HImage& image, F0SIZE_PIXEL& c0Pos)
 		if (r2 + 20 >= imgH || c1 + 170 + 50 >= c2)
 			return -4;
 
-		measure.GenMeasureRectangle2(r2, c1 + 170, PI * 0.5, 20, 50, imgW, imgH, "bilinear");
+		measure.GenMeasureRectangle2(r2, c1 + 170, PI * 0.5, 30, 50, imgW, imgH, "bilinear");
 		roiImage.MeasurePos(measure, 1.0, 10, "negative", "last", &rowEdge, &colEdge, &amp, &dist);
 		if (rowEdge.Length() > 0)
 			c0Pos._c0Row1 = rowEdge.D();
@@ -160,7 +161,7 @@ int MeasureSize::CalcCamera0(HImage& image, F0SIZE_PIXEL& c0Pos)
 		HRegion rect_ear_dilation;
 		GenRectangle1(&rect_ear_dilation, rr1 - 40, cc1 - 30, rr2 + 40, cc2);
 		HImage img_ear_dilation = roiImage.ReduceDomain(rect_ear_dilation);
-		earReg = img_ear_dilation.Threshold(0, 100);
+		earReg = img_ear_dilation.Threshold(0, _c0BodyGray + 20);
 		earReg = earReg.FillUp();
 		earReg = earReg.OpeningRectangle1(20, 20); // 去除毛刺点
 		earReg = earReg.Connection();
@@ -287,7 +288,7 @@ int MeasureSize::CalcCamera2(HImage& image, F2SIZE_PIXEL& c2Pos)
 		HImage image1 = image.AddImage(_addImage, 1, 0);
 
 		HRegion roi;
-		Hlong roiR1 = 0, roiC1 = 0, roiR2 = 1135, roiC2 = 3127;
+		Hlong roiR1 = _roi2_r1, roiC1 = _roi2_c1, roiR2 = _roi2_r2, roiC2 = _roi2_c2;
 		roi.GenRectangle1(roiR1, roiC1, roiR2, roiC2);
 
 		HImage roiImage = image1.ReduceDomain(roi);

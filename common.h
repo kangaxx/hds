@@ -340,6 +340,13 @@ enum CameraPosition {
 	CP_RIGHT_MID = 11,
 	CP_RIGHT_BOTTOM = 12
 };
+
+enum LOADER_MODE {
+	LM_CONSOLE_MODE = 0,
+	LM_WINFORM_MODE = 1,
+	LM_SERVICE_MODE = 2
+};
+
 #define MSEC_LENGTH 100000
 static int g_log_msec_type = 0;
 static int g_msec = GetTickCount() % MSEC_LENGTH;
@@ -351,9 +358,13 @@ inline int abs_used_time(int used_time) {
 	else return used_time;
 }
 #define MAX_VIRTUAL_CAMERA_COUNT 8
-#define CONCURRENT_LOGGER_DATA_CACHE_SIZE 50000 //多线程日志类cache size
-#define CONCURRENT_LOGGER_COUNT_MAX 200//日志内最多存储条数
 //	stdSize.W = fmt_value[0];
 //                                      W         L      H       H1      W1      W2 
 const double cathode_std_size[12] = { 62.534, 113.221, 31.436, 12.807, 13.884, 6.092, 3, 3, 3, 3, 3, 3 };
 const double anode_std_size[12] = { 64.648, 115.3, 25.125, 6.192, 13.852, 7.242, 3, 3, 3, 3, 3, 3 };
+#define WINDING_NG_RESULT_KEY "IsNg"
+#define WINDING_NG_RESULT_ISNG "0"
+
+#define CMD_NUM_FOR_LIB_LOADER_PLC_DEBUG 99
+#define CMD_NUM_FOR_LIB_LOADER_HEART_BEAT 98
+#define CMD_NUM_FOR_LIB_LOADER_CAMERA_NO_DELEGATE 1 //相机无回调模式（软硬触发皆可）

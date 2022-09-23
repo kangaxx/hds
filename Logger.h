@@ -14,7 +14,7 @@
 namespace commonfunction_c {
 	class LoggerBase {
 	public:
-		virtual void append_log(char*) = 0;
+		virtual void append_log(const char*) = 0;
 		virtual void set_level(int level) = 0;
 		virtual void Log(std::string l) = 0;
 	};
@@ -29,7 +29,7 @@ namespace commonfunction_c {
 			log_level_ = LOG_LEVEL_STD_OUT | LOG_LEVEL_STD_WRITE_FILE;
 		}
 
-		void append_log(char* log) {
+		void append_log(const char* log) {
 			Log(log);
 		}
 
