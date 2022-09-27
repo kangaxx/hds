@@ -60,7 +60,13 @@ class MeasureSize
 {
 public:
 	MeasureSize();
-
+	MeasureSize(double c0BodyGray, double c0EarGray, double c0EdgeThreshold, double c2BodyGray, double c2EdgeThreshold,
+		 double gray_ramp_beta, int gray_ramp_column, double c0ImageAdd, double c2ImageAdd) : _c0BodyGray(c0BodyGray),
+		_c0EarGray(c0EarGray), _c0EdgeThreshold(c0EdgeThreshold), _c2BodyGray(c2BodyGray), _c2EdgeThreshold(c2EdgeThreshold),
+		_gray_ramp_beta(gray_ramp_beta), _gray_ramp_column(gray_ramp_column), _c0_image_add(c0ImageAdd), 
+		_c2_image_add(c2ImageAdd), _scale(0.2) {
+		Reset();
+	}
 	// 重置测量状态，图像计数清零
 	void Reset();
 
@@ -121,7 +127,6 @@ private:
 	// 相机0,2的尺寸像素比例
 	double			_c0RateX, _c0RateY;
 	double			_c2RateX, _c2RateY;
-
 	// 相机0，极片区域二值化灰度
 	double			_c0BodyGray;
 
@@ -130,13 +135,16 @@ private:
 
 	// 寻边阈值
 	double			_c0EdgeThreshold;
-
+	double          _c2EdgeThreshold;
 	// 相机2，极片区域二值化灰度
 	double			_c2BodyGray;
 
 	// 相机2，亮度补偿图
 	HImage			_addImage;	
-
+	double          _gray_ramp_beta; //补光图参数
+	int             _gray_ramp_column; //补光图坐标(x)
+	double             _c0_image_add;
+	double             _c2_image_add;
 	// 相机0的ncc模型
 	HNCCModel		_c0Model;
 

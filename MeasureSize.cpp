@@ -5,18 +5,6 @@
 MeasureSize::MeasureSize() : _c0BodyGray(80), _c0EarGray(250), _c0EdgeThreshold(20), _c2BodyGray(75), _scale(0.2)
 {
 	Reset();
-
-	//HImage image;
-	//image.ReadImage("D:\\TestImage\\XinYu\\6\\Image_20220904090313873.bmp");
-	//HRegion rect;
-	//rect.GenRectangle1(532.343, 892.415, 2559.74, 2248.45);
-	//HImage image1 =  image.ReduceDomain(rect);
-	//_c0Model = image1.CreateNccModel(9, -0.18, 0.18, 0.01, "use_polarity");
-	//
-	//image.ReadImage("D:\\TestImage\\XinYu\\6\\Image_20220904090443739.bmp");
-
-	//HTuple Row, Column, Angle, Score;
-	//image.FindNccModel(_c0Model, -0.18, 0.18, 0.7, 1, 0.5, "true", 9, &Row, &Column, &Angle, &Score);
 }
 
 void MeasureSize::Reset()
@@ -68,7 +56,7 @@ void MeasureSize::SetMeasurePos()
 {
 	// 设置相机0的模板和测量点
 	HImage image;
-	image.ReadImage("D:\\TestImage\\XinYu\\5\\0 (1).jpg");
+	image.ReadImage("C:/tizer/fmt_0.jpg");
 
 	// 创建用于匹配的模板
 	double r1 = 833.357, c1 = 229.436, r2 = 2774.56, c2 = 1457.45;
@@ -113,7 +101,7 @@ void MeasureSize::SetMeasurePos()
 	_c0MPoints[7]._col = 1020 - cc;
 
 	// 设置相机2的模板和测量点
-	image.ReadImage("D:\\TestImage\\XinYu\\5\\2 (6).jpg");
+	image.ReadImage("C:/tizer/fmt_2.jpg");
 
 	// 创建用于匹配的模板
 	r1 = 433.852; c1 = 1019.41; r2 = 821.347; c2 = 2614.07;
@@ -214,13 +202,12 @@ int MeasureSize::CalcCamera0(HImage& image, F0SIZE_PIXEL& c0Pos)
 	_c0Count++;
 	memset(&c0Pos, 0, sizeof(c0Pos));
 	memset(&_c0LastPos, 0, sizeof(_c0LastPos));
-
 	try
 	{
 		Hlong imgW, imgH;
 		image.GetImageSize(&imgW, &imgH);
 
-		HImage image1 = image.AddImage(image, 1.5, 0);
+		HImage image1 = image.AddImage(image, _c0_image_add, 0); //image_add : 1.5
 		//HImage image2 = image.AddImage(image, 1.1, 0);
 
 		// 定位待测量目标的位置、角度
@@ -380,7 +367,7 @@ int MeasureSize::CalcCamera2(HImage& image, F2SIZE_PIXEL& c2Pos)
 		image.GetImageSize(&imgW, &imgH);
 
 		//HImage image1 = image.AddImage(image, 1.2, 0);
-		HImage image1 = image.AddImage(image, 1.5, 0);
+		HImage image1 = image.AddImage(image, _c2_image_add, 0); //_c2_image_add 1.5
 
 		// 定位待测量目标的位置、角度
 		MPOINT mp[4];
@@ -408,7 +395,7 @@ int MeasureSize::CalcCamera2(HImage& image, F2SIZE_PIXEL& c2Pos)
 		HTuple rowEdge, colEdge, amp, dist;
 		HMeasure measure;
 		measure.GenMeasureRectangle2(mp[0]._row, mp[0]._col, PI * 0.5 + angle, 20, 100, imgW, imgH, "bilinear");
-		roiImage.MeasurePos(measure, 1.0, 20, "positive", "first", &rowEdge, &colEdge, &amp, &dist);
+		roiImage.MeasurePos(measure, 1.0, _c2EdgeThreshold, "positive", "first", &rowEdge, &colEdge, &amp, &dist); //_c2EdgeThreshold : 20
 		if (rowEdge.Length() > 0)
 		{
 			c2Pos._c2Row0 = rowEdge.D();
@@ -469,7 +456,6 @@ int MeasureSize::CalcSize(const F0SIZE_PIXEL& c0Pos, const F2SIZE_PIXEL& c2Pos, 
 
 	size.W1 = (c0Pos._c0Row3 - c0Pos._c0Row2) * _c0RateY;
 	size.W2 = (c0Pos._c0Row1 - c0Pos._c0Row3) * _c0RateY;
-
 	size.H = (c0Pos._c0Col2 - c0Pos._c0Col0) * _c0RateX;
 	size.H1 = (c0Pos._c0Col2 - c0Pos._c0Col1) * _c0RateX;
 
