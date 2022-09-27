@@ -37,14 +37,39 @@ namespace commonfunction_c {
 		}
 
 		void initial(string json) {
-			stringstream  jsonstream(json);
-			json_parser::read_json<ptree>(jsonstream, _pt);
-			_isInitialed = true;
+			try {
+				stringstream  jsonstream(json);
+				json_parser::read_json<ptree>(jsonstream, _pt);
+				_isInitialed = true;
+			}
+			catch (...) {
+				_isInitialed = false;
+			}
 		}
 
 		void initialByFile(string file) {
-			read_json(file, _pt);
-			_isInitialed = true;
+			try {
+				read_json(file, _pt);
+				_isInitialed = true;
+			}
+			catch (...) {
+				_isInitialed = false;
+			}
+		}
+
+		void initial_new_root(string key, string value) {
+			try {
+				char* json;
+				int json_length = key.length() + value.length() + 20;
+				json = new char[json_length];
+				sprintf_s(json, json_length, "{\"%s\":\"%s\"}", key.c_str(), value.c_str());
+				stringstream  jsonstream(json);
+				json_parser::read_json<ptree>(jsonstream, _pt);
+				_isInitialed = true;
+			}
+			catch (...) {
+				_isInitialed = false;
+			}
 		}
 
 		string search(string key) {
@@ -102,6 +127,26 @@ namespace commonfunction_c {
 			}
 			return result;
 		}
+
+		void append_child(string key, string value, const char* parent_key = NULL) {
+			if (NULL == parent_key) {
+				//上级菜单key是NULL表示child直接插在第一层上
+				_pt.put(key.c_str(), value.c_str());
+			}
+		}
+
+		string get_json_string(const char* key = NULL) {
+			std::stringstream ss;
+			if (NULL == key) {
+				//返回json的根数据
+				write_json(ss, _pt);
+				return ss.str();
+			}
+			else {
+				return "";
+			}
+
+		}
 	private:
 		wstring _json_w_string;
 		string _json_string;
@@ -132,11 +177,8 @@ namespace commonfunction_c {
 				}
 				findAll(key, child.second, result);
 			}
-
 			return result;
 		}
-
-
 
 		std::string findFirst(std::string key, ptree const& pt) {
 			std::vector<std::string> values;
@@ -168,7 +210,6 @@ namespace commonfunction_c {
 			else if (type == TRAVERSE_TYPE_LAST) {
 
 			}
-
 		}
 
 		std::string findFirst(std::string tree, std::string key, ptree const& pt, std::vector<std::string>* out = NULL, TRAVERSE_TYPE type = TRAVERSE_TYPE_ALL) {
@@ -181,4 +222,4 @@ namespace commonfunction_c {
 		}
 	};
 }
-#endif //JSONHELPER_H
+#endif //JSONHELPER_H 

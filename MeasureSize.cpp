@@ -283,17 +283,13 @@ int MeasureSize::CalcCamera2(HImage& image, F2SIZE_PIXEL& c2Pos)
 	{
 		Hlong imgW, imgH;
 		image.GetImageSize(&imgW, &imgH);
-
 		//HImage image1 = image.AddImage(image, 1.2, 0);
 		HImage image1 = image.AddImage(_addImage, 1, 0);
-
 		HRegion roi;
 		Hlong roiR1 = _roi2_r1, roiC1 = _roi2_c1, roiR2 = _roi2_r2, roiC2 = _roi2_c2;
 		roi.GenRectangle1(roiR1, roiC1, roiR2, roiC2);
-
 		HImage roiImage = image1.ReduceDomain(roi);
 		roiImage = roiImage.MeanImage(3, 3);
-
 		// 查找极片矩形区域（排除极耳区域）
 		HRegion reg = roiImage.Threshold(0, _c2BodyGray);
 		reg = reg.FillUp();
@@ -307,7 +303,6 @@ int MeasureSize::CalcCamera2(HImage& image, F2SIZE_PIXEL& c2Pos)
 		// 基于极片矩形区域，构建测量区域
 		Hlong r1, c1, r2, c2;
 		reg.SmallestRectangle1(&r1, &c1, &r2, &c2);
-
 		// 构建row0测量区域
 		HRegion rect;
 		rect.GenRectangle1(r1 - 10, c1 - 10, r2 + 10, (c1 + c2) * 0.5);
