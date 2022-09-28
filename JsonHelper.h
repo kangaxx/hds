@@ -135,6 +135,24 @@ namespace commonfunction_c {
 			}
 		}
 
+		void append_array(string key, vector<ptree> values, const char* parent_key = NULL) {
+			if (NULL == parent_key) {
+				ptree children;
+				for (int i = 0; i < values.size(); ++i)
+					children.push_back(std::make_pair("",values.at(i)));
+				_pt.add_child(key, children);
+			}
+		}
+
+		void append_array(string key, ptree values[], int count, const char* parent_key = NULL) {
+			if (NULL == parent_key) {
+				ptree children;
+				for (int i = 0; i < count; ++i)
+					children.push_back(std::make_pair("", values[i]));
+				_pt.add_child(key, children);
+			}
+		}
+
 		string get_json_string(const char* key = NULL) {
 			std::stringstream ss;
 			if (NULL == key) {

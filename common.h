@@ -256,7 +256,6 @@
 #define FLOAT_BURR_LEVEL_MID 50.0 //25 ~ 50um 是中型毛刺
 #define FLOAT_BURR_LEVEL_HIGH 75.0 //50 ~ 75um 是大型毛刺
 #define FLOAT_BURR_LEVEL_UPH 100.0 //75 ~ 100um 是超大型毛刺，超过100um是巨型毛刺
-#define MAX_CAMERA_NUM 5 //数据统计，允许最多相机数量
 #define TYPE_INFLECTION_MAX 1 //最大值波峰
 #define TYPE_INFLECTION_MIN 2 //最小值波峰
 
@@ -368,4 +367,6 @@ const double anode_std_size[12] = { 64.648, 115.3, 25.125, 6.192, 13.852, 7.242,
 #define CMD_NUM_FOR_LIB_LOADER_PLC_DEBUG 99
 #define CMD_NUM_FOR_LIB_LOADER_HEART_BEAT 98
 #define CMD_NUM_FOR_LIB_LOADER_CAMERA_NO_DELEGATE 1 //相机无回调模式（软硬触发皆可）
+#define CMD_NUM_FOR_LIB_LOADER_MANUAL_PROCESSING 6//手动触发
 #define CMD_NUM_FOR_LIB_LOADER_HSL_DEBUG 9
+#define MAX_CAMERA_COUNT 10 //一次成像操作中允许的最多相机熟悉
